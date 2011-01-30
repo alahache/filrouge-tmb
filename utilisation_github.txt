@@ -140,7 +140,8 @@ Pour forker le projet :
 
 	
 - Mettre à jour le dépôt local :
-	> git pull
+	> git pull origin master
+	Met à jour la branche master à partir du dépôt distant origin (cf. git remote)
 	
 	
 - Planifier la suppression d'un fichier :
