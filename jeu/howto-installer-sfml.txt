@@ -3,12 +3,12 @@ INSTALLATION SFML
 
 (ubuntu 10.04)
 
-- Télécharger la version 1.6 linux 32 bits sur :
-http://www.sfml-dev.org/download-fr.php
+- Téléchargez la version 1.6 linux 32 bits sur :
+	http://www.sfml-dev.org/download-fr.php
 
 - décompresser l'archive, aller sans le répertoire SFML-X.Y/ puis taper :
-> make
-> sudo make install
+	> make
+	> sudo make install
 
 Si après compilation, vous n'arrivez pas à lancer un exécutable et vous obtenez
 une erreur d'édition des liens :
@@ -30,3 +30,5 @@ deux solution :
 	----------------------------------------------------------------------------------
 	
 normallement avec l'une des deux solutions, ça devrait marcher.
+
+

@@ -154,9 +154,9 @@ Pour forker le projet :
 4 - Aller plus loin
 -------------------
 
-- Gérer différentes branches dans un mêmes dépot (pour par exemple faire des modifications expérimentales) :
+- Gérer différentes branches dans un même dépot (pour par exemple faire des modifications expérimentales) :
 	http://www.alexgirard.com/git-book/3_usage_basique_des_branches_et_des_merges.html
 
 
-- Pour plus d'informations : documentation très complète sur git :
+- Pour plus d'informations - documentation très complète sur git :
 	http://www.alexgirard.com/git-book/index.html
