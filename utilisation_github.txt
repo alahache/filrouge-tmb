@@ -15,7 +15,7 @@
 
 - Configurez git :
 	> git config --global user.name "alahache"
-	> git config --global user.rmail arnaud.lahache@gmail.com
+	> git config --global user.email arnaud.lahache@gmail.com
 
 
 - Récupérez votre clé publique ssh :
