@@ -8,12 +8,15 @@
 - Téléchargez et installez git :
 	> sudo apt-get install git-core
 
+
 - Inscrivez-vous sur github :
 	https://github.com/
+
 
 - Configurez git :
 	> git config --global user.name "alahache"
 	> git config --global user.rmail arnaud.lahache@gmail.com
+
 
 - Récupérez votre clé publique ssh :
 	[http://help.github.com/linux-key-setup/]
@@ -40,43 +43,52 @@
 	simplement sur 'entrée' pour ignorer... Une fois la clé générée, copiez-collez le
 	contenu de id_rsa.pub sur la page citée plus haut.
 
-	Pour tester que votre clé a bien été prise en compte, lancez la commande :
+	- Pour tester que votre clé a bien été prise en compte, lancez la commande :
 	
 	> ssh git@github.com
 	
 	Si la connection vous balance un truc du genre :
-	
+	----------------------------------------------------------------------------
 	The authenticity of host 'github.com (207.97.227.239)' can't be established.
 	RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
 	Are you sure you want to continue connecting (yes/no)? yes
-	
+	----------------------------------------------------------------------------
 	Mettez "yes" puis appuyez sur 'entrée'
 	
 	Si vous voyez un message du type :
-	
+	-----------------------------------------------------------------------------------------
 	Hi alahache! You've successfully authenticated, but GitHub does not provide shell access.
          Connection to github.com closed.
-	
+    -----------------------------------------------------------------------------------------
 	Alors votre clé a bien été prise en compte.
 	
+
 Pour créer un dépôt sur git : (pas très utile pour le projet)
 [http://help.github.com/creating-a-repo]
+
+Pour forker le projet :
+[http://help.github.com/forking/]
+
 
 
 2 - Rejoindre le Dépôt
 ----------------------
 
-- Allez sur la page https://github.com/alahache/filrouge-tmb et cliquez sur "Watch"
+- Allez sur la page :
+	https://github.com/alahache/filrouge-tmb
+		et cliquez sur "Watch"
+
 
 - Placez-vous dans un dossier où vous souhaitez ajouter le dépôt :
-> mkdir filrouge-tmb
-> cd filrouge-tmb
+	> mkdir filrouge-tmb
+	> cd filrouge-tmb
+
 
 - Clonez le dépôt depuis l'adresse du repository :
-> git clone git@github.com:alahache/filrouge-tmb.git
+	> git clone git@github.com:alahache/filrouge-tmb.git
 
-Cette commande permet de récupérer le dépot se situant à l'adresse
-git@github.com:alahache/filrouge-tmb.git
+	Cette commande permet de récupérer le dépot se situant à l'adresse
+	git@github.com:alahache/filrouge-tmb.git
 
 
 
@@ -84,25 +96,53 @@ git@github.com:alahache/filrouge-tmb.git
 ----------------
 
 - Ajouter un nouveau fichier :
-> touch nouveau_fichier
-> git add nouveau_fichier
-> git commit -m "ajout du fichier nouveau_fichier"
+	> touch nouveau_fichier
+	> git add nouveau_fichier
+
+
+- Ajouter tous les nouveaux fichiers :
+	> git add .
+
+
+- Effectuer un commit local :
+	> git commit -m "ajout du fichier nouveau_fichier"
 
 
 - Voir quel est l'état en cours de votre dépôt local :
-(ex : fichiers pas encore ajoutés, conflits, etc.)
-> git status
+	(ex : fichiers pas encore ajoutés, fichiers édités, conflits, etc.)
+	> git status
 
 
 - Uploader le dépot local sur github :
+	[http://help.github.com/remotes/]
+	Si c'est la première fois que vous voulez uploader (commande git push), faites :
+	> git remote add origin git@github.com:alahache/filrouge-tmb.git
 
-Si c'est la première fois que vous voulez uploader (commande git push), faites :
-> git remote add origin git@github.com:alahache/filrouge-tmb.git
+	Cela permettera de pouvoir utiliser "origin" à la place de l'adresse complète
+	"git@github.com:alahache/filrouge-tmb.git" à chaque fois que vous voulez faire
+	un push.
 
-Cela permettera de pouvoir utiliser "origin" à la place de l'adresse complète
-"git@github.com:alahache/filrouge-tmb.git" à chaque fois que vous voulez faire
-un push.
+	> git push origin master
 
-> git push origin master
+	Cette commande uploade la branche "master" (principale) vers le remote "origin"
 
-Cette commande uploade la branche "master" (principale) vers le remote "origin"
+
+- Editer un fichier :
+	Effectuez des modifications sur un fichier déjà ajouté précédament (edition, 
+	suppression)...
+	Puis utilisez la commande git commit avec l'option -a pour commiter automatiquement
+	tous les fichiers modifiés :
+	> git commit -a -m "modification trucs"
+	
+	Cela ne marche pas si vous venez de créer le fichier, il faut d'abord utiliser git add.
+
+	
+- Mettre à jour le dépôt local :
+	> git pull
+	
+	
+- Planifier la suppression d'un fichier :
+	> git rm fichier_a_supprimer
+	
+[http://help.github.com/git-cheat-sheets/]
+
