@@ -121,10 +121,12 @@ Pour forker le projet :
 	Cela permettera de pouvoir utiliser "origin" à la place de l'adresse complète
 	"git@github.com:alahache/filrouge-tmb.git" à chaque fois que vous voulez faire
 	un push.
-
+	
 	> git push origin master
-
 	Cette commande uploade la branche "master" (principale) vers le remote "origin"
+	
+	ou tout simplement :
+	> git push
 
 
 - Editer un fichier :
