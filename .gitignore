@@ -1,0 +1,7 @@
+#Ici on met tous les fichiers à ignorer
+
+#Ignorer les .o
+*.o
+
+#Ignorer l'exécutable du jeu Breakout
+Breakout/BreakOut
