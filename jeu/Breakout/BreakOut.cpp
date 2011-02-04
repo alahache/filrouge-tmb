@@ -6,7 +6,6 @@
 #include <algorithm>
 
 #include "BreakOut.h"
-#include "Interface.h"
 
 
 BreakOut::BreakOut() {
@@ -24,10 +23,19 @@ BreakOut::~BreakOut() {
     delete sprBackground;
     delete imgBackground;
     delete app;
+    delete balle;
 }
 
 sf::RenderWindow* BreakOut::GetRenderWindow() { //Emulation de la webcam
     return app;
+}
+
+sf::Sprite* BreakOut::GetBarre() {
+	return sprBarre;
+}
+
+sf::Sprite* BreakOut::GetBackground() {
+	return sprBackground;
 }
 
 void BreakOut::SetInterface(Interface* myInterface) {
@@ -40,8 +48,7 @@ void BreakOut::initGame() {
 }
 
 void BreakOut::loadRessources() {
-    //Chargement de la balle
-    
+    //Chargement de la barre
     imgBarre = new sf::Image();
     if (!imgBarre->LoadFromFile("barre.png"))
         //return EXIT_FAILURE;
@@ -58,6 +65,10 @@ void BreakOut::loadRessources() {
     sprBackground = new sf::Sprite(*imgBackground);
     sprBackground->Move(0, 0);
     
+    //Chargement de la balle
+    balle = new Balle(this);
+    
+    // Font
     font = new sf::Font();
     if (!font->LoadFromFile("arial.ttf"))
         //return EXIT_FAILURE;
@@ -89,6 +100,7 @@ void BreakOut::Run() {
         }
         
         
+        // Maj barre :
         int x = (int)(interface->GetX()*app->GetWidth());
         x -= (int)(sprBarre->GetSize().x/2);
 
@@ -97,6 +109,9 @@ void BreakOut::Run() {
             
             sprBarre->SetX(x);
         }
+        
+        // Maj balle :
+        balle->majPositions();
 
         //AFFICHAGE
         
@@ -119,6 +134,9 @@ void BreakOut::Run() {
         
         // Draw the sprite
         app->Draw(*sprBarre);
+        
+        // Draw the ball
+        app->Draw(*(balle->GetSprite()));
 
         // Draw the string
         app->Draw(*text);

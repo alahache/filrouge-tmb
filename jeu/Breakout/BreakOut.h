@@ -4,11 +4,12 @@
 #include <SFML/Graphics.hpp>
 
 #include "Interface.h"
+#include "Balle.h"
 
 class BreakOut {
     public:
-
-        static const int SCREEN_W = 800;
+    
+    	static const int SCREEN_W = 800;
         static const int SCREEN_H = 600;
     
         BreakOut();
@@ -18,6 +19,9 @@ class BreakOut {
         
         void SetInterface(Interface* myInterface);
         
+        sf::Sprite* GetBarre();
+        sf::Sprite* GetBackground();
+        
         sf::RenderWindow* GetRenderWindow(); //Emulation de la webcam
     
     private:
@@ -26,7 +30,7 @@ class BreakOut {
         
         Interface* interface;
         
-        //Balle* balle;
+        Balle* balle;
         
         sf::Image* imgBarre;	// Barre
         sf::Sprite* sprBarre;
@@ -38,6 +42,9 @@ class BreakOut {
         sf::String* text;
         
         sf::RenderWindow* app;
+        
+        // TODO : faire un vecteur de tous les objets
+        // vector<Sprite*> listeObjets;
         
         int score;
         bool isGameOn;

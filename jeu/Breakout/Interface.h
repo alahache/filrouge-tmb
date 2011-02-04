@@ -5,6 +5,7 @@
 
 class Interface {
     public:
+    
         Interface(); //Constructeur normal
         Interface(sf::RenderWindow* myApp); //Constructeur pour l'émulation de la webcam
         ~Interface();
