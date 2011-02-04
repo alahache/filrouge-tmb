@@ -54,6 +54,7 @@ void BreakOut::loadRessources() {
         //return EXIT_FAILURE;
         std::cout << "ERREUR: chargement de l'image";
     sprBarre = new sf::Sprite(*imgBarre);
+    AjouterSprite(sprBarre);
     
     sprBarre->Move(400, 530);
     
@@ -64,9 +65,11 @@ void BreakOut::loadRessources() {
         std::cout << "ERREUR: chargement de l'image";
     sprBackground = new sf::Sprite(*imgBackground);
     sprBackground->Move(0, 0);
+    AjouterSprite(sprBackground);
     
     //Chargement de la balle
     balle = new Balle(this);
+    AjouterSprite(balle->GetSprite());
     
     // Font
     font = new sf::Font();
@@ -140,9 +143,27 @@ void BreakOut::Run() {
 
         // Draw the string
         app->Draw(*text);
+        
+        //for(int i=0; i<listeSprites.size(); i++) {
+        	//std::cout<<listeSprites.size()<<std::endl;
+        	//app->Draw(*(listeSprites[i]));
+        //}
 
         // Update the window
         app->Display();
     }
+}
+
+
+void BreakOut::AjouterSprite(sf::Sprite* spr) {
+	listeSprites.push_back(spr);
+}
+
+sf::Sprite* BreakOut::GetSprite(unsigned int i) {
+	return listeSprites[i];
+}
+
+unsigned int BreakOut::NbSprites() {
+	return listeSprites.size();
 }
 

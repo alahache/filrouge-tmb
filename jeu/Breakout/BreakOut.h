@@ -2,6 +2,7 @@
 #define BREAKOUT
 
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 #include "Interface.h"
 #include "Balle.h"
@@ -23,6 +24,11 @@ class BreakOut {
         sf::Sprite* GetBackground();
         
         sf::RenderWindow* GetRenderWindow(); //Emulation de la webcam
+        
+        // Liste de sprites :
+        void AjouterSprite(sf::Sprite* spr);
+        sf::Sprite* GetSprite(unsigned int i);
+        unsigned int NbSprites();
     
     private:
         void loadRessources();
@@ -43,8 +49,8 @@ class BreakOut {
         
         sf::RenderWindow* app;
         
-        // TODO : faire un vecteur de tous les objets
-        // vector<Sprite*> listeObjets;
+        // Vecteur de Sprites :
+        std::vector<sf::Sprite*> listeSprites;
         
         int score;
         bool isGameOn;

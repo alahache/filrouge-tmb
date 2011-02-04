@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+// Déclaration anticipée de la classe BreakOut :
 class BreakOut;
 
 class Balle {
