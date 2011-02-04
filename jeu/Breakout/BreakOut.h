@@ -26,8 +26,10 @@ class BreakOut {
         
         Interface* interface;
         
-        sf::Image* imgBalle; //Image de la balle
-        sf::Sprite* sprBalle; //Sprite de la balle
+        //Balle* balle;
+        
+        sf::Image* imgBarre;	// Barre
+        sf::Sprite* sprBarre;
         
         sf::Image* imgBackground;
         sf::Sprite* sprBackground;

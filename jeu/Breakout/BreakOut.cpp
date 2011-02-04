@@ -17,8 +17,8 @@ BreakOut::BreakOut() {
 }
 
 BreakOut::~BreakOut() {
-    delete sprBalle;
-    delete imgBalle;
+    delete sprBarre;
+    delete imgBarre;
     delete text;
     delete font;
     delete sprBackground;
@@ -42,13 +42,13 @@ void BreakOut::initGame() {
 void BreakOut::loadRessources() {
     //Chargement de la balle
     
-    imgBalle = new sf::Image();
-    if (!imgBalle->LoadFromFile("img.png"))
+    imgBarre = new sf::Image();
+    if (!imgBarre->LoadFromFile("barre.png"))
         //return EXIT_FAILURE;
         std::cout << "ERREUR: chargement de l'image";
-    sprBalle = new sf::Sprite(*imgBalle);
+    sprBarre = new sf::Sprite(*imgBarre);
     
-    sprBalle->Move(400, 530);
+    sprBarre->Move(400, 530);
     
     //Chargement du Background
     imgBackground = new sf::Image();
@@ -90,12 +90,12 @@ void BreakOut::Run() {
         
         
         int x = (int)(interface->GetX()*app->GetWidth());
-        x -= (int)(sprBalle->GetSize().x/2);
+        x -= (int)(sprBarre->GetSize().x/2);
 
         if(isGameOn) {
             //TODO: Mettre a jour le jeu
             
-            sprBalle->SetX(x);
+            sprBarre->SetX(x);
         }
 
         //AFFICHAGE
@@ -118,7 +118,7 @@ void BreakOut::Run() {
         //TODO: Ici afficher tous les objets
         
         // Draw the sprite
-        app->Draw(*sprBalle);
+        app->Draw(*sprBarre);
 
         // Draw the string
         app->Draw(*text);

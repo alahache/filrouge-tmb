@@ -15,23 +15,17 @@ Interface::~Interface() {
 }
 
 float Interface::GetX() {
-    if(app != NULL) {
-        miseAJour();
-    }
+    miseAJour();
     return x;
 }
 
 float Interface::Gety() {
-    if(app != NULL) {
-        miseAJour();
-    }
+   	miseAJour();
     return y;
 }
 
 bool Interface::isMousePressed() {
-    if(app != NULL) {
-        miseAJour();
-    }
+    miseAJour();
     return isPressed;
 }
 
@@ -45,8 +39,10 @@ void Interface::setMousePressed(bool isMousePressed) {
 }
 
 void Interface::miseAJour() {
-    const sf::Input& input = app->GetInput();
-    x = input.GetMouseX()/(float)app->GetWidth();
-    y = input.GetMouseY()/(float)app->GetHeight();
-    isPressed = input.IsMouseButtonDown(sf::Mouse::Left);
+	if(app != NULL) {
+		const sf::Input& input = app->GetInput();
+		x = input.GetMouseX()/(float)app->GetWidth();
+		y = input.GetMouseY()/(float)app->GetHeight();
+		isPressed = input.IsMouseButtonDown(sf::Mouse::Left);
+	}
 }
