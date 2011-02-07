@@ -4,4 +4,4 @@
 *.o
 
 #Ignorer l'exécutable du jeu Breakout
-Breakout/BreakOut
+jeu/Breakout/BreakOut

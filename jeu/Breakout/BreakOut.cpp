@@ -13,6 +13,8 @@ BreakOut::BreakOut() {
     app->SetFramerateLimit(35);
     
     loadRessources();
+    
+    std::cout << "Test0 : " <<listeSprites.size() << std::endl;
 }
 
 BreakOut::~BreakOut() {
@@ -25,6 +27,40 @@ BreakOut::~BreakOut() {
     delete app;
     delete balle;
 }
+
+void BreakOut::loadRessources() {
+    
+    //Chargement du Background
+    imgBackground = new sf::Image();
+    if (!imgBackground->LoadFromFile("Bg.png"))
+        //return EXIT_FAILURE;
+        std::cout << "ERREUR: chargement de l'image";
+    sprBackground = new sf::Sprite(*imgBackground);
+    sprBackground->Move(0, 0);
+    
+    //Chargement de la barre
+    imgBarre = new sf::Image();
+    if (!imgBarre->LoadFromFile("barre.png"))
+        //return EXIT_FAILURE;
+        std::cout << "ERREUR: chargement de l'image";
+    sprBarre = new sf::Sprite(*imgBarre);
+    AjouterSprite(sprBarre);
+    
+    //Chargement de la balle
+    balle = new Balle(this);
+    AjouterSprite(balle->GetSprite());
+    
+    sprBarre->Move(400, 530);
+    
+    // Font
+    font = new sf::Font();
+    if (!font->LoadFromFile("arial.ttf"))
+        //return EXIT_FAILURE;
+        std::cout << "ERREUR: chargement de la font";
+    text = new sf::String("Score :", *font, 30);
+    text->SetColor(sf::Color(0, 0, 0));
+}
+
 
 sf::RenderWindow* BreakOut::GetRenderWindow() { //Emulation de la webcam
     return app;
@@ -47,46 +83,14 @@ void BreakOut::initGame() {
     score=0;
 }
 
-void BreakOut::loadRessources() {
-    //Chargement de la barre
-    imgBarre = new sf::Image();
-    if (!imgBarre->LoadFromFile("barre.png"))
-        //return EXIT_FAILURE;
-        std::cout << "ERREUR: chargement de l'image";
-    sprBarre = new sf::Sprite(*imgBarre);
-    AjouterSprite(sprBarre);
-    
-    sprBarre->Move(400, 530);
-    
-    //Chargement du Background
-    imgBackground = new sf::Image();
-    if (!imgBackground->LoadFromFile("Bg.png"))
-        //return EXIT_FAILURE;
-        std::cout << "ERREUR: chargement de l'image";
-    sprBackground = new sf::Sprite(*imgBackground);
-    sprBackground->Move(0, 0);
-    AjouterSprite(sprBackground);
-    
-    //Chargement de la balle
-    balle = new Balle(this);
-    AjouterSprite(balle->GetSprite());
-    
-    // Font
-    font = new sf::Font();
-    if (!font->LoadFromFile("arial.ttf"))
-        //return EXIT_FAILURE;
-        std::cout << "ERREUR: chargement de la font";
-    text = new sf::String("Score :", *font, 30);
-    text->SetColor(sf::Color(0, 0, 0));
-}
-
 void BreakOut::Run() {
+
+	// On lance le jeu
     initGame();
     
     // Start the game loop
     while (app->IsOpened())
     {
-        if(isGameOn) score++;
         // Process events
         sf::Event Event;
         while (app->GetEvent(Event))
@@ -102,52 +106,45 @@ void BreakOut::Run() {
             }
         }
         
-        
-        // Maj barre :
-        int x = (int)(interface->GetX()*app->GetWidth());
-        x -= (int)(sprBarre->GetSize().x/2);
-
         if(isGameOn) {
-            //TODO: Mettre a jour le jeu
-            
-            sprBarre->SetX(x);
-        }
         
-        // Maj balle :
-        balle->majPositions();
+        	// Maj barre :
+		    int x = (int)(interface->GetX()*app->GetWidth());
+		    x -= (int)(sprBarre->GetSize().x/2);
 
-        //AFFICHAGE
-        
-        std::string txt("Score : ");
-        {
-            std::ostringstream os;
-            os << score;
-            if(!isGameOn) {
-                os << " Perdu !! Appuyer sur entrée pour recommencer.";
-            }
-            txt += os.str();
+            sprBarre->SetX(x);
+            
+            // Maj balle :
+       		balle->majPositions();
+       		
+       		
         }
-        text->SetText(txt);
+        
+        // change text :
+   		std::string txt("Score : ");
+	    {
+	        std::ostringstream os;
+	        os << score;
+	        if(!isGameOn) {
+	            os << " Perdu !! Appuyer sur entrée pour recommencer.";
+	        }
+	        txt += os.str();
+	    }
+	    text->SetText(txt);
 
         // Clear screen
         app->Clear(sf::Color(255, 255, 255));
+        
+        // Draw the background
         app->Draw(*sprBackground);
         
-        //TODO: Ici afficher tous les objets
+        // Draw all the objects on the window
+        for(int i=0; i<listeSprites.size(); i++) {
+        	app->Draw(*(listeSprites[i]));
+        }
         
-        // Draw the sprite
-        app->Draw(*sprBarre);
-        
-        // Draw the ball
-        app->Draw(*(balle->GetSprite()));
-
         // Draw the string
         app->Draw(*text);
-        
-        //for(int i=0; i<listeSprites.size(); i++) {
-        	//std::cout<<listeSprites.size()<<std::endl;
-        	//app->Draw(*(listeSprites[i]));
-        //}
 
         // Update the window
         app->Display();
@@ -156,7 +153,9 @@ void BreakOut::Run() {
 
 
 void BreakOut::AjouterSprite(sf::Sprite* spr) {
+	//std::cout << "ajout sprite (" << listeSprites.size() << ")" << std::endl;
 	listeSprites.push_back(spr);
+	//std::cout << listeSprites.size() << std::endl;
 }
 
 sf::Sprite* BreakOut::GetSprite(unsigned int i) {
