@@ -36,6 +36,7 @@ class BreakOut {
         
         Interface* interface;
         
+        sf::Image* imgBalle;
         Balle* balle;
         
         sf::Image* imgBarre;	// Barre

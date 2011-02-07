@@ -3,48 +3,25 @@
 #include "Balle.h"
 #include "BreakOut.h"
 
-Balle::Balle(BreakOut* leJeu) {
-	// Image :
-	imgBalle = new sf::Image();
-    if (!imgBalle->LoadFromFile("img.png"))
-        std::cout << "ERREUR: chargement de l'image";
-    sprBalle = new sf::Sprite(*imgBalle);
-    
-    // Position :
-    x=0;
-    y=0;
-    
-    // Background :
-    jeu = leJeu;
-    
+Balle::Balle(sf::Image *img, BreakOut* leJeu)
+	: sf::Sprite(*img), jeu(leJeu)
+{
+
     if(jeu) {
     	x=jeu->GetBackground()->GetSize().x / 2;
     	y=jeu->GetBackground()->GetSize().y / 2;
     }
     
     // Direction :
-    direction.x=3;
-    direction.y=3;
+    direction.x=5;
+    direction.y=5;
 }
 
 Balle::~Balle() {
-	delete imgBalle;
-	delete sprBalle;
+	// rien.
 }
 
-float Balle::GetX() {
-	return x;
-}
-
-float Balle::GetY() {
-	return y;
-}
-
-sf::Sprite* Balle::GetSprite() {
-	return sprBalle;
-}
-
-void Balle::majPositions() {
+void Balle::MajPositions() {
 	
 	// TODO : gérer les collisions avec tous les objets (cf liste sprites)
 	
@@ -55,9 +32,20 @@ void Balle::majPositions() {
 		direction.y = -direction.y;
 	
 	// Bouger le sprite :
-	sprBalle->Move(direction);
+	Move(direction);
 	
-	x=sprBalle->GetPosition().x;
-	y=sprBalle->GetPosition().y;
+	x=GetPosition().x;
+	y=GetPosition().y;
 }
 
+void Balle::SetDirection(sf::Vector2f uneDirection) {
+	direction=uneDirection;
+}
+
+float Balle::GetX() {
+	return GetPosition().x;
+}
+
+float Balle::GetY() {
+	return GetPosition().y;
+}

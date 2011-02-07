@@ -12,20 +12,21 @@ BreakOut::BreakOut() {
     app = new sf::RenderWindow(sf::VideoMode(SCREEN_W, SCREEN_H), "Break Out - Demo pour le projet de Fil Rouge 3IF 2011");
     app->SetFramerateLimit(35);
     
+    // Lancer le jeu :
     loadRessources();
-    
-    std::cout << "Test0 : " <<listeSprites.size() << std::endl;
 }
 
 BreakOut::~BreakOut() {
     delete sprBarre;
     delete imgBarre;
-    delete text;
-    delete font;
+    delete balle;
+    delete imgBalle;
     delete sprBackground;
     delete imgBackground;
+    delete text;
+    delete font;
     delete app;
-    delete balle;
+    
 }
 
 void BreakOut::loadRessources() {
@@ -47,8 +48,11 @@ void BreakOut::loadRessources() {
     AjouterSprite(sprBarre);
     
     //Chargement de la balle
-    balle = new Balle(this);
-    AjouterSprite(balle->GetSprite());
+	imgBalle = new sf::Image();
+    if (!imgBalle->LoadFromFile("img.png"))
+        std::cout << "ERREUR: chargement de l'image";
+    balle = new Balle(imgBalle, this);
+    AjouterSprite(balle);
     
     sprBarre->Move(400, 530);
     
@@ -115,7 +119,7 @@ void BreakOut::Run() {
             sprBarre->SetX(x);
             
             // Maj balle :
-       		balle->majPositions();
+       		balle->MajPositions();
        		
        		
         }
@@ -153,9 +157,7 @@ void BreakOut::Run() {
 
 
 void BreakOut::AjouterSprite(sf::Sprite* spr) {
-	//std::cout << "ajout sprite (" << listeSprites.size() << ")" << std::endl;
 	listeSprites.push_back(spr);
-	//std::cout << listeSprites.size() << std::endl;
 }
 
 sf::Sprite* BreakOut::GetSprite(unsigned int i) {

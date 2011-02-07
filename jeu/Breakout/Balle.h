@@ -9,20 +9,23 @@ class BreakOut;
 class Balle : public sf::Sprite {
     public:
     
-        Balle(sf::Image* img, BreakOut *leJeu=0)
-        	: sf::Sprite(img), jeu(leJeu) { }
+        Balle(sf::Image *img, BreakOut *leJeu=0);
         ~Balle();
         
        	float GetX();
        	float GetY();
-       	void majPositions();
+       	void MajPositions();
+       	void SetDirection(sf::Vector2f uneDirection);
     
     private:
         
-        BreakOut *jeu
+        BreakOut *jeu; // Ref. vers le jeu
         
         sf::Vector2f direction;	// Direction du Sprite
         // note : Vector2f -> Vector2<float>
+        
+        float x;
+        float y;
 };
 
 #endif
