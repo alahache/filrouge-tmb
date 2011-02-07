@@ -19,9 +19,6 @@ Balle::Balle(sf::Image *img, BreakOut* leJeu)
     speed = 10;
     calculerDirection();
     
-    std::cout << direction.x << std::endl;
-	std::cout << direction.y << std::endl << std::endl;
-    
     // HitBox :
     hitBox.Left 	= x;
     hitBox.Top 		= y;
@@ -59,14 +56,10 @@ void Balle::MajPositions() {
 		// Gestion Sprites spéciaux :
 		if(sprCourant == jeu->GetBarre()) {		// Collision avec la barre
 		
-			// Contrôle direction :
+			// Contrôle direction : (entre 30 et 160 degrés)
 			angle = (120.0/sizeSpr.x) * (rectSpr.Right - (x + GetSize().x / 2)) + 30.0;
-			std::cout << angle << std::endl;
 			
 			calculerDirection();
-			
-			std::cout << direction.x << std::endl;
-			std::cout << direction.y << std::endl << std::endl;
 		}
 	}
 	
