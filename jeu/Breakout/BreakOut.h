@@ -51,6 +51,7 @@ class BreakOut {
         sf::RenderWindow* app;
         
         // Vecteur de Sprites :
+        // TODO : Créer notre propre classe de Sprites (GameSprite?) -> hitBox, maj, etc.
         std::vector<sf::Sprite*> listeSprites;
         
         int score;

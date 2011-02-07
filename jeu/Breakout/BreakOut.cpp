@@ -120,8 +120,6 @@ void BreakOut::Run() {
             
             // Maj balle :
        		balle->MajPositions();
-       		
-       		
         }
         
         // change text :

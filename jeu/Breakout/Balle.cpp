@@ -1,20 +1,33 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <cmath>
 #include "Balle.h"
 #include "BreakOut.h"
+
+#define PI 3.14159265
 
 Balle::Balle(sf::Image *img, BreakOut* leJeu)
 	: sf::Sprite(*img), jeu(leJeu)
 {
-
-    if(jeu) {
-    	x=jeu->GetBackground()->GetSize().x / 2;
-    	y=jeu->GetBackground()->GetSize().y / 2;
-    }
+	x=jeu->GetBackground()->GetSize().x / 2;
+	y=jeu->GetBackground()->GetSize().y / 2;
+	SetX(x);
+	SetY(y);
     
     // Direction :
-    direction.x=5;
-    direction.y=5;
+    angle = -45;
+    speed = 10;
+    calculerDirection();
+    
+    std::cout << direction.x << std::endl;
+	std::cout << direction.y << std::endl << std::endl;
+    
+    // HitBox :
+    hitBox.Left 	= x;
+    hitBox.Top 		= y;
+    hitBox.Right 	= x + GetSize().x;
+    hitBox.Bottom 	= y + GetSize().y;
+    
 }
 
 Balle::~Balle() {
@@ -23,23 +36,61 @@ Balle::~Balle() {
 
 void Balle::MajPositions() {
 	
-	// TODO : gérer les collisions avec tous les objets (cf liste sprites)
-	
 	// Collisions avec les bords du terrain :
 	if(x <= jeu->GetBackground()->GetPosition().x || x >= jeu->GetBackground()->GetSize().x)
 		direction.x = -direction.x;
 	if(y <= jeu->GetBackground()->GetPosition().y || y >= jeu->GetBackground()->GetSize().y)
 		direction.y = -direction.y;
+		
+	// Collisions avec les sprites du jeu :
+	for(int i=0; i<jeu->NbSprites(); i++) {
+	
+		sf::Sprite* sprCourant = jeu->GetSprite(i);
+		if(sprCourant == this) continue;
+		
+		// TODO : créer classe GameSprite avec hitBox, maj, ...
+		sf::Vector2f posSpr = sprCourant->GetPosition();
+		sf::Vector2f sizeSpr = sprCourant->GetSize();
+		sf::FloatRect rectSpr(posSpr.x, posSpr.y, posSpr.x + sizeSpr.x, posSpr.y + sizeSpr.y);
+		
+		// Test de collistion :
+		if(!hitBox.Intersects(rectSpr)) continue;
+		
+		// Gestion Sprites spéciaux :
+		if(sprCourant == jeu->GetBarre()) {		// Collision avec la barre
+		
+			// Contrôle direction :
+			angle = (120.0/sizeSpr.x) * (rectSpr.Right - (x + GetSize().x / 2)) + 30.0;
+			std::cout << angle << std::endl;
+			
+			calculerDirection();
+			
+			std::cout << direction.x << std::endl;
+			std::cout << direction.y << std::endl << std::endl;
+		}
+	}
 	
 	// Bouger le sprite :
 	Move(direction);
 	
 	x=GetPosition().x;
 	y=GetPosition().y;
+	
+	// HitBox :
+    hitBox.Left 	= x;
+    hitBox.Top 		= y;
+    hitBox.Right 	= x + GetSize().x;
+    hitBox.Bottom 	= y + GetSize().y;
 }
 
-void Balle::SetDirection(sf::Vector2f uneDirection) {
-	direction=uneDirection;
+void Balle::SetSpeed(float unSpeed) {
+	speed = unSpeed;
+	calculerDirection();
+}
+
+void Balle::SetAngle(float unAngle) {
+	angle = unAngle;
+	calculerDirection();
 }
 
 float Balle::GetX() {
@@ -48,4 +99,14 @@ float Balle::GetX() {
 
 float Balle::GetY() {
 	return GetPosition().y;
+}
+
+const sf::FloatRect & Balle::GetHitBox() {
+	return hitBox;
+}
+
+void Balle::calculerDirection() {
+	float angleRadian = angle*PI/180;
+	direction.x = speed * cos(angleRadian);
+	direction.y = - speed * sin(angleRadian);	// On soustrait la direction obtenue grâce à l'angle
 }

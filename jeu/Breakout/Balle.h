@@ -15,7 +15,9 @@ class Balle : public sf::Sprite {
        	float GetX();
        	float GetY();
        	void MajPositions();
-       	void SetDirection(sf::Vector2f uneDirection);
+       	void SetSpeed(float unSpeed);
+       	void SetAngle(float unAngle);
+       	const sf::FloatRect& GetHitBox();
     
     private:
         
@@ -24,8 +26,15 @@ class Balle : public sf::Sprite {
         sf::Vector2f direction;	// Direction du Sprite
         // note : Vector2f -> Vector2<float>
         
+        sf::FloatRect hitBox;
+        
         float x;
         float y;
+        
+        float speed;
+        float angle;
+        
+        void calculerDirection();
 };
 
 #endif
