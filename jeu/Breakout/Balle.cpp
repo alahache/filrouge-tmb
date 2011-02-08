@@ -1,105 +1,70 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
 #include <cmath>
+
 #include "Balle.h"
 #include "BreakOut.h"
 
 #define PI 3.14159265
 
-Balle::Balle(sf::Image *img, BreakOut* leJeu)
-	: sf::Sprite(*img), jeu(leJeu)
+Balle::Balle(sf::Image *img, BreakOut* pGame)
+	: GameSprite(img), game(pGame)
 {
-	x=jeu->GetBackground()->GetSize().x / 2;
-	y=jeu->GetBackground()->GetSize().y / 2;
-	SetX(x);
-	SetY(y);
+	SetX(game->GetBackground().GetSize().x / 2);
+	SetY(game->GetBackground().GetSize().y / 2);
     
     // Direction :
     angle = -45;
     speed = 10;
-    calculerDirection();
-    
-    // HitBox :
-    hitBox.Left 	= x;
-    hitBox.Top 		= y;
-    hitBox.Right 	= x + GetSize().x;
-    hitBox.Bottom 	= y + GetSize().y;
-    
+    calculateDirection();
 }
 
 Balle::~Balle() {
-	// rien.
+	// Nothing to delete either
 }
 
-void Balle::MajPositions() {
+void Balle::Update() {
 	
-	// Collisions avec les bords du terrain :
-	if(x <= jeu->GetBackground()->GetPosition().x || x >= jeu->GetBackground()->GetSize().x)
+	// Collisions with window edges :
+	if(X() <= game->GetBackground().GetPosition().x || X() >= game->GetBackground().GetSize().x)
 		direction.x = -direction.x;
-	if(y <= jeu->GetBackground()->GetPosition().y || y >= jeu->GetBackground()->GetSize().y)
+	if(Y() <= game->GetBackground().GetPosition().y || Y() >= game->GetBackground().GetSize().y)
 		direction.y = -direction.y;
 		
-	// Collisions avec les sprites du jeu :
-	for(int i=0; i<jeu->NbSprites(); i++) {
+	// Collisions with any Sprite :
+	for(int i=0; i<game->NbSprites(); i++) {
 	
-		sf::Sprite* sprCourant = jeu->GetSprite(i);
-		if(sprCourant == this) continue;
+		GameSprite* currentSpr = game->GetSprite(i);
+		if(currentSpr == this) continue;
 		
-		// TODO : créer classe GameSprite avec hitBox, maj, ...
-		sf::Vector2f posSpr = sprCourant->GetPosition();
-		sf::Vector2f sizeSpr = sprCourant->GetSize();
-		sf::FloatRect rectSpr(posSpr.x, posSpr.y, posSpr.x + sizeSpr.x, posSpr.y + sizeSpr.y);
+		// Collision test :
+		if(!Hits(currentSpr)) continue;
 		
-		// Test de collistion :
-		if(!hitBox.Intersects(rectSpr)) continue;
+		// Actions depending on Sprite's type :
+		if(currentSpr == &(game->GetBarre())) {
 		
-		// Gestion Sprites spéciaux :
-		if(sprCourant == jeu->GetBarre()) {		// Collision avec la barre
-		
-			// Contrôle direction : (entre 30 et 160 degrés)
-			angle = (120.0/sizeSpr.x) * (rectSpr.Right - (x + GetSize().x / 2)) + 30.0;
+			// direction control : (between 30 and 160 degrees)
+			angle = (120.0/currentSpr->Width()) * ((currentSpr->X() + currentSpr->Width()) - (X() + (Width() / 2))) + 30.0;
 			
-			calculerDirection();
+			calculateDirection();
 		}
 	}
 	
-	// Bouger le sprite :
+	// Move the sprite :
 	Move(direction);
 	
-	x=GetPosition().x;
-	y=GetPosition().y;
-	
-	// HitBox :
-    hitBox.Left 	= x;
-    hitBox.Top 		= y;
-    hitBox.Right 	= x + GetSize().x;
-    hitBox.Bottom 	= y + GetSize().y;
 }
 
 void Balle::SetSpeed(float unSpeed) {
 	speed = unSpeed;
-	calculerDirection();
+	calculateDirection();
 }
 
 void Balle::SetAngle(float unAngle) {
 	angle = unAngle;
-	calculerDirection();
+	calculateDirection();
 }
 
-float Balle::GetX() {
-	return GetPosition().x;
-}
-
-float Balle::GetY() {
-	return GetPosition().y;
-}
-
-const sf::FloatRect & Balle::GetHitBox() {
-	return hitBox;
-}
-
-void Balle::calculerDirection() {
-	float angleRadian = angle*PI/180;
+void Balle::calculateDirection() {
+	float angleRadian = angle*PI/180.0;
 	direction.x = speed * cos(angleRadian);
-	direction.y = - speed * sin(angleRadian);	// On soustrait la direction obtenue grâce à l'angle
+	direction.y = - speed * sin(angleRadian);
 }

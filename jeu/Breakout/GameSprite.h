@@ -3,24 +3,25 @@
 
 #include <SFML/Graphics.hpp>
 
-// Previous declaration of Game Interface :
-class Game;
-
 class GameSprite : public sf::Sprite {
     public:
     	
     	// =================================== Constructors / Destructor
-        GameSprite(sf::Image* pImg, Game* pGame=0);
+        GameSprite(sf::Image* pImg);
         virtual ~GameSprite();
         
+        // =================================== Public methods
+        bool Hits(GameSprite* pSpr);
+        
         // =================================== Abstract methods
-        virtual void Update() = 0;
-        virtual void Hit(GameSprite* pSpr) = 0;
-        virtual void Draw() = 0;
+        virtual void Update();
+        virtual void HitBy(GameSprite* pSpr);
         
         // =================================== Getters
-       	float GetX();
-       	float GetY();
+       	float X();
+       	float Y();
+       	float Width();
+       	float Height();
        	const sf::FloatRect& GetHitBox();
        	
        	// =================================== Setters
@@ -29,9 +30,6 @@ class GameSprite : public sf::Sprite {
     protected:
     
     	// =================================== Attributes
-    	float x;
-        float y;
-        Game *game;
         GameSprite *parent;
         sf::FloatRect hitBox;
 };

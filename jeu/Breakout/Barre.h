@@ -1,5 +1,5 @@
-#ifndef BALLE_H
-#define BALLE_H
+#ifndef BARRE_H
+#define BARRE_H
 
 #include <SFML/Graphics.hpp>
 
@@ -7,30 +7,24 @@
 
 class BreakOut;
 
-class Balle : public GameSprite {
+class Barre : public GameSprite {
     public:
     	
     	// =================================== Constructors / Destructor
-        Balle(sf::Image* img, BreakOut* pGame=0);
-        ~Balle();
+        Barre(sf::Image* img, BreakOut* pGame=0);
+        ~Barre();
         
         // =================================== Redefined methods from GameSprite
        	void Update();
        	
        	// =================================== Public methods
-       	void SetSpeed(float anySpeed);
-       	void SetAngle(float anyAngle);
     
     protected:
     
     	// =================================== Attributes
     	BreakOut* game;
-        sf::Vector2f direction;
-        float speed;
-        float angle;
         
         // =================================== Protected methods
-        void calculateDirection();
 };
 
 #endif

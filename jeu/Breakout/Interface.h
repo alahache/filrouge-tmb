@@ -11,7 +11,7 @@ class Interface {
         ~Interface();
         
         float GetX();
-        float Gety();
+        float GetY();
         
         bool isMousePressed();
         

@@ -1,31 +1,27 @@
 #include <sstream>
 #include <string>
-#include <vector>
-#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <algorithm>
 
 #include "BreakOut.h"
 
+#include "Balle.h"
+#include "Barre.h"
 
-BreakOut::BreakOut() {
-    app = new sf::RenderWindow(sf::VideoMode(SCREEN_W, SCREEN_H), "Break Out - Demo pour le projet de Fil Rouge 3IF 2011");
-    app->SetFramerateLimit(35);
-    
-    // Lancer le jeu :
-    loadRessources();
+BreakOut::BreakOut()
+	: Game(SCREEN_W, SCREEN_H, "BreakOut") {
+	
+	loadRessources();
+	
 }
 
 BreakOut::~BreakOut() {
-    delete sprBarre;
     delete imgBarre;
-    delete balle;
     delete imgBalle;
-    delete sprBackground;
     delete imgBackground;
+    delete sprBackground;
     delete text;
     delete font;
-    delete app;
     
 }
 
@@ -44,17 +40,15 @@ void BreakOut::loadRessources() {
     if (!imgBarre->LoadFromFile("barre.png"))
         //return EXIT_FAILURE;
         std::cout << "ERREUR: chargement de l'image";
-    sprBarre = new sf::Sprite(*imgBarre);
-    AjouterSprite(sprBarre);
+    barre = new Barre(imgBarre, this);
+    AddSprite(barre);
     
     //Chargement de la balle
 	imgBalle = new sf::Image();
     if (!imgBalle->LoadFromFile("img.png"))
         std::cout << "ERREUR: chargement de l'image";
     balle = new Balle(imgBalle, this);
-    AjouterSprite(balle);
-    
-    sprBarre->Move(400, 530);
+    AddSprite(balle);
     
     // Font
     font = new sf::Font();
@@ -66,16 +60,20 @@ void BreakOut::loadRessources() {
 }
 
 
-sf::RenderWindow* BreakOut::GetRenderWindow() { //Emulation de la webcam
-    return app;
+GameSprite& BreakOut::GetBarre() {
+	return *barre;
 }
 
-sf::Sprite* BreakOut::GetBarre() {
-	return sprBarre;
+GameSprite& BreakOut::GetBalle() {
+	return *barre;
 }
 
-sf::Sprite* BreakOut::GetBackground() {
-	return sprBackground;
+sf::Sprite& BreakOut::GetBackground() {
+	return *sprBackground;
+}
+
+Interface& BreakOut::GetInterface() {
+    return *interface;
 }
 
 void BreakOut::SetInterface(Interface* myInterface) {
@@ -89,19 +87,18 @@ void BreakOut::initGame() {
 
 void BreakOut::Run() {
 
-	// On lance le jeu
-    initGame();
-    
+	initGame();
+
     // Start the game loop
-    while (app->IsOpened())
+    while (window->IsOpened())
     {
         // Process events
         sf::Event Event;
-        while (app->GetEvent(Event))
+        while (window->GetEvent(Event))
         {
             // Close window : exit
             if (Event.Type == sf::Event::Closed)
-            app->Close();
+            window->Close();
             
             if(Event.Type == sf::Event::KeyPressed) {
                 if(!isGameOn && Event.Key.Code == sf::Key::Return) {
@@ -112,14 +109,10 @@ void BreakOut::Run() {
         
         if(isGameOn) {
         
-        	// Maj barre :
-		    int x = (int)(interface->GetX()*app->GetWidth());
-		    x -= (int)(sprBarre->GetSize().x/2);
-
-            sprBarre->SetX(x);
-            
-            // Maj balle :
-       		balle->MajPositions();
+        	// Update all sprites :
+		    for(int i=0; i<sprites.size(); i++) {
+		    	sprites[i]->Update();
+		    }
         }
         
         // change text :
@@ -135,34 +128,21 @@ void BreakOut::Run() {
 	    text->SetText(txt);
 
         // Clear screen
-        app->Clear(sf::Color(255, 255, 255));
+        window->Clear(sf::Color(255, 255, 255));
         
         // Draw the background
-        app->Draw(*sprBackground);
+        window->Draw(*sprBackground);
         
         // Draw all the objects on the window
-        for(int i=0; i<listeSprites.size(); i++) {
-        	app->Draw(*(listeSprites[i]));
+        for(int i=0; i<sprites.size(); i++) {
+        	window->Draw(*(sprites[i]));
         }
         
         // Draw the string
-        app->Draw(*text);
+        window->Draw(*text);
 
         // Update the window
-        app->Display();
+        window->Display();
     }
-}
-
-
-void BreakOut::AjouterSprite(sf::Sprite* spr) {
-	listeSprites.push_back(spr);
-}
-
-sf::Sprite* BreakOut::GetSprite(unsigned int i) {
-	return listeSprites[i];
-}
-
-unsigned int BreakOut::NbSprites() {
-	return listeSprites.size();
 }
 

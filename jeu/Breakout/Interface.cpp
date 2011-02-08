@@ -19,7 +19,7 @@ float Interface::GetX() {
     return x;
 }
 
-float Interface::Gety() {
+float Interface::GetY() {
    	miseAJour();
     return y;
 }

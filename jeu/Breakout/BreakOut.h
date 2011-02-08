@@ -1,13 +1,13 @@
-#ifndef BREAKOUT
-#define BREAKOUT
+#ifndef BREAKOUT_H
+#define BREAKOUT_H
 
 #include <SFML/Graphics.hpp>
 #include <vector>
 
 #include "Interface.h"
-#include "Balle.h"
+#include "Game.h"
 
-class BreakOut {
+class BreakOut : public Game {
     public:
     
     	static const int SCREEN_W = 800;
@@ -19,16 +19,11 @@ class BreakOut {
         void Run();
         
         void SetInterface(Interface* myInterface);
+        Interface& GetInterface();
         
-        sf::Sprite* GetBarre();
-        sf::Sprite* GetBackground();
-        
-        sf::RenderWindow* GetRenderWindow(); //Emulation de la webcam
-        
-        // Liste de sprites :
-        void AjouterSprite(sf::Sprite* spr);
-        sf::Sprite* GetSprite(unsigned int i);
-        unsigned int NbSprites();
+        GameSprite& GetBarre();
+        GameSprite& GetBalle();
+        sf::Sprite& GetBackground();
     
     private:
         void loadRessources();
@@ -37,10 +32,10 @@ class BreakOut {
         Interface* interface;
         
         sf::Image* imgBalle;
-        Balle* balle;
+        GameSprite* balle;
         
-        sf::Image* imgBarre;	// Barre
-        sf::Sprite* sprBarre;
+        sf::Image* imgBarre;
+        GameSprite* barre;
         
         sf::Image* imgBackground;
         sf::Sprite* sprBackground;
@@ -48,14 +43,7 @@ class BreakOut {
         sf::Font* font;
         sf::String* text;
         
-        sf::RenderWindow* app;
-        
-        // Vecteur de Sprites :
-        // TODO : Créer notre propre classe de Sprites (GameSprite?) -> hitBox, maj, etc.
-        std::vector<sf::Sprite*> listeSprites;
-        
         int score;
-        bool isGameOn;
 };
 
 #endif

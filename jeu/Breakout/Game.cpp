@@ -8,12 +8,6 @@
 Game::Game(unsigned int w, unsigned int h, std::string title) {
 	window = new sf::RenderWindow(sf::VideoMode(w, h), title.c_str());
     window->SetFramerateLimit(35);
-    
-    // Load the game ressources :
-    //loadRessources();
-    
-    // Initialize the game :
-    //initGame();
 }
 
 Game::~Game() {
@@ -32,4 +26,8 @@ GameSprite* Game::GetSprite(unsigned int i) {
 
 unsigned int Game::NbSprites() {
 	return sprites.size();
+}
+
+sf::RenderWindow& Game::GetWindow() {
+	return *window;
 }

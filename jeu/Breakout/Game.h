@@ -23,11 +23,11 @@ class Game {
         unsigned int NbSprites();
         
         // =================================== Getters
-        sf::RenderWindow* GetWindow();
+        sf::RenderWindow& GetWindow();
     
     protected:
     
-    	// =================================== Protected Abstract methods
+    	// =================================== Protected methods
         virtual void loadRessources() = 0;
         virtual void initGame() = 0;
         
