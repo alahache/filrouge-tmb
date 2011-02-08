@@ -1,5 +1,5 @@
-#ifndef BALLE_H
-#define BALLE_H
+#ifndef GAMESPRITE_H
+#define GAMESPRITE_H
 
 #include <SFML/Graphics.hpp>
 

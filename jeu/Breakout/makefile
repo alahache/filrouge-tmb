@@ -1,7 +1,7 @@
 OPT_CMP=-c
 OPT_EDL=-o
 
-BreakOut: BreakOut.o Main.o Interface.o Balle.o
+BreakOut: BreakOut.o Main.o Interface.o Balle.o GameSprite.o Game.o
 	g++ $(OPT_EDL) BreakOut BreakOut.o Main.o Interface.o Balle.o -lsfml-graphics -lsfml-window -lsfml-system
 
 BreakOut.o: BreakOut.cpp BreakOut.h
@@ -15,6 +15,12 @@ Interface.o: Interface.cpp Interface.h
 	
 Balle.o: Balle.cpp Balle.h
 	g++ $(OPT_CMP) Balle.cpp
+	
+Game.o: Game.cpp Game.h
+	g++ $(OPT_CMP) Game.cpp	
+	
+GameSprite.o: GameSprite.cpp GameSprite.h
+	g++ $(OPT_CMP) GameSprite.cpp	
 
 clean:
 	rm *.o
