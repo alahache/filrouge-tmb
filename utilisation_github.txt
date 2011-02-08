@@ -150,8 +150,41 @@ Pour forker le projet :
 [http://help.github.com/git-cheat-sheets/]
 
 
+4 - Utilisation des branch
+--------------------------
 
-4 - Aller plus loin
+ - Créer une nouvelle branche (par exemple "dev")
+	> git branch dev
+
+ - Switcher vers la branche "dev"
+	> git checkout dev
+
+ - Effectuez des modifications sur "dev", effectuez un commit...
+	> git commit -a -m "modifs..."
+
+ - Envoyez les modifications vers GitHub via push (si la branche "dev" n'est pas sur GitHub) :
+	> git push origin dev
+	Ici push envoie les modifications vers le dépôt origin, vers la branche "dev". Si la
+	branche dev n'existe pas sur GitHub, elle sera créée.
+
+ - Envoyez les modifications vers GitHub via push (a la suite) :
+	> git push
+	Même si vous êtes dans master, il envoiera également les modifications de "dev"
+
+ - Revenir vers la branche master
+	> git checkout master
+	Vous remarquerez que vos modifications ne seront plus visibles
+
+ - Fusionner la branche master avec les modiciations dans "dev"
+	> git merge dev
+	> git push
+
+ - Récupérer les modifications de la branche "dev" dans la branche locale courante : (de
+ préférence "dev")
+	> git pull origin dev
+
+
+5 - Aller plus loin
 -------------------
 
 - Gérer différentes branches dans un même dépot (pour par exemple faire des modifications expérimentales) :
