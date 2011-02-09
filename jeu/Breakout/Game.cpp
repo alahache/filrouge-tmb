@@ -28,6 +28,6 @@ unsigned int Game::NbSprites() {
 	return sprites.size();
 }
 
-sf::RenderWindow& Game::GetWindow() {
-	return *window;
+sf::RenderWindow* Game::GetWindow() {
+	return window;
 }

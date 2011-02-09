@@ -16,6 +16,7 @@ class Game {
         
         // =================================== Abstract methods
         virtual void Run() = 0;
+        //virtual GameSprite* CreateSprite(std::string type) = 0;
         
         // =================================== Sprite List methods
         void AddSprite(GameSprite* pSpr);
@@ -23,7 +24,7 @@ class Game {
         unsigned int NbSprites();
         
         // =================================== Getters
-        sf::RenderWindow& GetWindow();
+        sf::RenderWindow* GetWindow();
     
     protected:
     

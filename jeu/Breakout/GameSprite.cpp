@@ -49,6 +49,10 @@ void GameSprite::HitBy(GameSprite* pSpr) {
 	// To be redefined if necessary
 }
 
+std::string GameSprite::GetType() {
+	return 0;
+}
+
 float GameSprite::X() {
 	return GetPosition().x;
 }
