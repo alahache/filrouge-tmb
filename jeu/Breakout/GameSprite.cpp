@@ -50,7 +50,7 @@ void GameSprite::HitBy(GameSprite* pSpr) {
 }
 
 std::string GameSprite::GetType() {
-	return 0;
+	return type;
 }
 
 float GameSprite::X() {

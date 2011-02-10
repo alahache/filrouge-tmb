@@ -8,6 +8,10 @@
 Balle::Balle(sf::Image *img, BreakOut* pGame)
 	: GameSprite(img), game(pGame)
 {
+	// Type :
+	type = "balle";
+
+	// Position :
 	SetX(game->GetBackground().GetSize().x / 2);
 	SetY(game->GetBackground().GetSize().y / 2);
     
@@ -39,7 +43,7 @@ void Balle::Update() {
 		if(!Hits(currentSpr)) continue;
 		
 		// Actions depending on Sprite's type :
-		if(currentSpr == &(game->GetBarre())) {
+		if(currentSpr->GetType()=="barre") {
 		
 			// direction control : (between 30 and 160 degrees)
 			angle = (120.0/currentSpr->Width()) * ((currentSpr->X() + currentSpr->Width()) - (X() + (Width() / 2))) + 30.0;

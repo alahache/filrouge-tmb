@@ -5,7 +5,10 @@
 Barre::Barre(sf::Image* img, BreakOut* pGame)
 	: GameSprite(img), game(pGame)
 {
+	// Type :
 	type = "barre";
+	
+	// Position :
 	SetX(game->GetBackground().GetSize().x / 2);
 	SetY(530);
 }
