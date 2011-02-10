@@ -13,7 +13,7 @@ Balle::Balle(sf::Image *img, BreakOut* pGame)
     
     // Direction :
     angle = -45;
-    speed = 10;
+    speed = 15;
     calculateDirection();
 }
 
