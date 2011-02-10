@@ -5,8 +5,15 @@
 #include <opencv/highgui.h>
 #include <opencv/cv.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
+#include <iostream>
+#include <sys/sem.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
 
 // Maths methods
 #define max(a, b) ((a) > (b) ? (a) : (b))
@@ -17,6 +24,12 @@
 // Step mooving for object min & max
 #define STEP_MIN 5
 #define STEP_MAX 100
+
+struct sembuf reserver = {0, -1, 0};
+struct sembuf liberer = {0, 1, 0};
+
+// Get the color of the pixel where the mouse has clicked
+void getObjectColor(int event, int x, int y, int flags, void *param = NULL);
 
 class Interface {
     // --------------------------------------------------------------
@@ -34,11 +47,10 @@ class Interface {
         
         void setPosition(float x, float y);
         void setMousePressed(bool isMousePressed);
-        
+        void monSuperThread();
         
     private: 
-		// Get the color of the pixel where the mouse has clicked
-		void getObjectColor(int event, int x, int y, int flags, void *param = NULL);
+		
 		// Add a circle on the video that fellow your colored object
 		void addObjectToVideo(IplImage* image, CvPoint objectNextPos, int nbPixels);
 		// Transform the image into a two colored image, one color for the color we want to track, another color for the others colors
@@ -59,13 +71,14 @@ class Interface {
         int h,s,v, tolerance;
         
         CvCapture *capture;
-		// Key for keyboard event
-		char key;
-	 
-		// Number of tracked pixels
-		int nbPixels;
+        
 		// Next position of the object we overlay
 		CvPoint objectNextPos;
+		
+		int sem; // sémaphore
+		int pidVideo;
+		
+		
 		
 };
 

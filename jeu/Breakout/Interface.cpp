@@ -1,6 +1,15 @@
 #include "Interface.h"
 
 #include <SFML/Graphics.hpp>
+#include <cstdlib>
+#include <cstdio>
+#include <iostream>
+#include <sys/sem.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
 
 Interface::Interface() {
     app = NULL;
@@ -16,8 +25,8 @@ Interface::Interface(sf::RenderWindow* myApp) {
     
     // Check if the capture is ok
    	 if (!capture) {
-   	 printf("Can't initialize the video capture.\n");
-   		 return -1;
+   	  std::cerr << "Can't initialize the video capture" << std::endl;
+  
 	 }
  
     // Create the windows
@@ -29,32 +38,64 @@ Interface::Interface(sf::RenderWindow* myApp) {
     // Mouse event to select the tracked color on the original image
     cvSetMouseCallback("Test Color Tracking", getObjectColor);
     
+    sem = semget(1234, 1, IPC_CREAT);
+    if (sem<0) 
+    {	
+		std::cerr << "unable to obtain semaphore" << std::endl;
+	}
+	else
+	{
+		semctl(sem, 0, SETVAL, 1);
+	} 
+	
+	pidVideo = fork();
+	if (pidVideo == 0)
+	{
+		monSuperThread();
+	}
+    
 }
 
 Interface::~Interface() {
 
-	// Destroy the windows we have created
-    cvDestroyWindow("Test Color Tracking");
-    cvDestroyWindow("Test Mask");
- 
-    // Destroy the capture
-    cvReleaseCapture(&capture);
+	if (pidVideo !=0)
+	{
+		kill(pidVideo, SIGTERM);
+		waitpid(pidVideo, NULL, 0); 
+		// Destroy the windows we have created
+		cvDestroyWindow("Test Color Tracking");
+		cvDestroyWindow("Test Mask");
+	 
+		// Destroy the capture
+		cvReleaseCapture(&capture);
+		
+		semctl (sem, 0, IPC_RMID, 0); // destruction semaphore
+	}	
     
 }
 
 float Interface::GetX() {
-    miseAJour();
-    return x;
+    //miseAJour();
+    //return x;
+    semop (sem, &reserver, 1); //réservation ressource critique
+   	int res = x;
+   	semop (sem, &liberer, 1); 
+    return res;
 }
 
 float Interface::Gety() {
-   	miseAJour();
-    return y;
+   	//miseAJour();
+   	// return y;
+   	semop (sem, &reserver, 1); //réservation ressource critique
+   	int res = y;
+   	semop (sem, &liberer, 1); 
+    return res;
 }
 
 bool Interface::isMousePressed() {
     miseAJour();
     return isPressed;
+    
 }
 
 void Interface::setPosition(float posx, float posy) {
@@ -75,22 +116,27 @@ void Interface::miseAJour() {
 	}
 }
 
-// méthode à rajouter
-/*
+void Interface::monSuperThread() {
 // We get the current image
-   	 image = cvQueryFrame(capture);
- 
-   	 // If there is no image, we exit the loop
-   	 if(!image)
-   		 continue;
- 
-   	 objectNextPos = binarisation(image, &nbPixels);
-   	 addObjectToVideo(image, objectNextPos, nbPixels);
- 
-   	 // We wait 10 ms
-   	 key = cvWaitKey(10);
+   	
+   	char key ='A';
+   	int nbPixels = 0;
+   	while (key != 'q' && key !='Q')
+   	{
+		 image = cvQueryFrame(capture);
+	 
+		 // If there is no image, we exit the loop
+		 if(!image)
+			 continue;
+	 
+		 objectNextPos = binarisation(image, &nbPixels);
+		 addObjectToVideo(image, objectNextPos, nbPixels);
+	 
+		 // We wait 10 ms
+		 key = cvWaitKey(10);
+	 }
+}
 
-*/
 
 
 // méthodes privées
@@ -102,7 +148,6 @@ void Interface::miseAJour() {
 CvPoint Interface::binarisation(IplImage* image, int *nbPixels) {
  
     int x, y;
-    CvScalar pixel;
     IplImage *hsv, *mask;
     IplConvKernel *kernel;
     int sommeX = 0, sommeY = 0;
@@ -150,10 +195,18 @@ CvPoint Interface::binarisation(IplImage* image, int *nbPixels) {
    	 cvReleaseImage(&hsv);
  
     // If there is no pixel, we return a center outside the image, else we return the center of gravity
-    if(*nbPixels > 0)
-   	 return cvPoint((int)(sommeX / (*nbPixels)), (int)(sommeY / (*nbPixels)));
+    if(*nbPixels > 10)
+    {
+		this->x = ((sommeX / (*nbPixels))/(image->width))*100;
+		this->y = ((sommeY / (*nbPixels))/(image->height))*100;
+		return cvPoint((int)(sommeX / (*nbPixels)), (int)(sommeY / (*nbPixels)));
+    }
     else
-   	 return cvPoint(-1, -1);
+    {
+		this->x = -1;
+		this->y = -1;
+		return cvPoint(-1, -1);
+	}
 }
 
 /*
@@ -203,7 +256,7 @@ CvPoint Interface::binarisation(IplImage* image, int *nbPixels) {
  * Get the color of the pixel where the mouse has clicked
  * We put this color as model color (the color we want to tracked)
  */
-void Interface::getObjectColor(int event, int x, int y, int flags, void *param = NULL) {
+void getObjectColor(int event, int x, int y, int flags, void *param) {
  
     // Vars
     CvScalar pixel;
