@@ -1,4 +1,4 @@
-// Commande de construction : g++ -Wall -o "%e" "%f" -lopencv_core -lopencv_highgui
+// Commande de construction : g++ -o "%e" "%f" -lopencv_core -lopencv_highgui
 
 #include "opencv/highgui.h"
 #include "opencv/cv.h"
@@ -31,6 +31,7 @@ int h = 0, s = 0, v = 0, tolerance = 10;
 CvPoint binarisation(IplImage* image, int *nbPixels) {
  
 	int x, y;
+	
 	CvScalar pixel;
 	IplImage *hsv, *mask;
 	IplConvKernel *kernel;
@@ -79,8 +80,13 @@ CvPoint binarisation(IplImage* image, int *nbPixels) {
     	cvReleaseImage(&hsv);
  
 	// If there is no pixel, we return a center outside the image, else we return the center of gravity
-	if(*nbPixels > 0)
+	if(*nbPixels > 10)
+	{
+		
+		cout << "X : " << sommeX / (*nbPixels) << "/" << image->width << " et Y : " << sommeY / (*nbPixels) << "/" << image->height << endl;
 		return cvPoint((int)(sommeX / (*nbPixels)), (int)(sommeY / (*nbPixels)));
+	}
+		
 	else
 		return cvPoint(-1, -1);
 }
@@ -162,7 +168,7 @@ void getObjectColor(int event, int x, int y, int flags, void *param = NULL) {
 int main() {
  
 	// Image & hsvImage
-	IplImage *hsv;
+	//IplImage *hsv;
 	// Video Capture
 	CvCapture *capture;
 	// Key for keyboard event

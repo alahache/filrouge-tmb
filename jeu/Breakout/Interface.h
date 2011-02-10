@@ -5,15 +5,13 @@
 #include <opencv/highgui.h>
 #include <opencv/cv.h>
 
-#include <cstdlib>
-#include <cstdio>
-#include <iostream>
-#include <sys/sem.h>
-#include <sys/wait.h>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/wait.h>
+#include <sys/shm.h>
 
 // Maths methods
 #define max(a, b) ((a) > (b) ? (a) : (b))
@@ -25,8 +23,8 @@
 #define STEP_MIN 5
 #define STEP_MAX 100
 
-struct sembuf reserver = {0, -1, 0};
-struct sembuf liberer = {0, 1, 0};
+static struct sembuf reserver = {0, -1, 0};
+static struct sembuf liberer = {0, 1, 0};
 
 // Get the color of the pixel where the mouse has clicked
 void getObjectColor(int event, int x, int y, int flags, void *param = NULL);
@@ -48,6 +46,12 @@ class Interface {
         void setPosition(float x, float y);
         void setMousePressed(bool isMousePressed);
         void monSuperThread();
+        void miseAJour(); //Emulation de la webcam
+        
+        
+        // Temporaire, fais des getters après...
+        IplImage *image;
+        int h,s,v, tolerance;
         
     private: 
 		
@@ -58,27 +62,20 @@ class Interface {
     
     // ----------------------------------------------------------------
     // Attributs
-    private:
-        void miseAJour(); //Emulation de la webcam
+    
+    
+		CvPoint objectPos;
         sf::RenderWindow* app;
         
-        float x;
-        float y;
         bool isPressed;
         
-        IplImage *image;
-        CvPoint objectPos;
-        int h,s,v, tolerance;
+        float *x;
+		float *y;
         
         CvCapture *capture;
-        
-		// Next position of the object we overlay
-		CvPoint objectNextPos;
 		
 		int sem; // sémaphore
 		int pidVideo;
-		
-		
 		
 };
 
