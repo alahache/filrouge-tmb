@@ -1,54 +1,49 @@
 #include "Interface.h"
 
 #include <iostream>
-#include <cmath>
+
+#define KEYX 5678
+#define KEYY 5679
+#define KEYSEM 1234
 
 using namespace std;
 
+// TODO :
+// Méthode d'affichage/supression de la fenetre cam...
+// Gérer les exceptions d'erreurs mémoire...
+
 Interface::Interface() 
 {
-	int shmid;
-    key_t keyX = 5678;
 
-    if ((shmid = shmget(keyX, sizeof(float), IPC_CREAT | 0666)) < 0) {
+    if ((sharedIdX = shmget(KEYX, sizeof(float), IPC_CREAT | 0666)) < 0) 
+    {
 		cerr << "shgetX" << endl;
-        //return -1;
     }
     
-    if ((x = (float*)shmat(shmid, NULL, 0)) == (float *) -1) {
+    if ((x = (float*)shmat(sharedIdX, NULL, 0)) == (float *) -1) 
+    {
         cerr << "shmatX" << endl;
     }
-    
-    key_t keyY = 5679;
 
-    if ((shmid = shmget(keyY, sizeof(float), IPC_CREAT | 0666)) < 0) {
+    if ((sharedIdY = shmget(KEYY, sizeof(float), IPC_CREAT | 0666)) < 0) 
+    {
 		cerr << "shgetY" << endl;
-        //return -1;
     }
     
-    if ((y = (float*)shmat(shmid, NULL, 0)) == (float *) -1) {
+    if ((y = (float*)shmat(sharedIdY, NULL, 0)) == (float *) -1) 
+    {
         cerr << "shmatY" << endl;
     }
     
-    
-    
     *x = -1;
     *y = -1;
-
-    /*
-     * Now put some things into the memory for the
-     * other process to read.
-     */
-    //s = shm;
-	
+    
 	app = NULL;
 	objectPos = cvPoint(-1, -1);
 	h = 0; 
 	s = 0;
 	v = 0;
 	tolerance = 10;
-	
-	y = new float();
 
 	capture = cvCreateCameraCapture(200);
 
@@ -67,7 +62,7 @@ Interface::Interface()
 	// Mouse event to select the tracked color on the original image
 	cvSetMouseCallback("Test Color Tracking", getObjectColor, this);
 
-	sem = semget(1234, 1, IPC_CREAT);
+	sem = semget(KEYSEM, 1, IPC_CREAT);
 	if (sem<0) 
 	{	
 		cerr << "unable to obtain semaphore" << endl;
@@ -93,64 +88,106 @@ Interface::Interface(sf::RenderWindow* myApp)
 
 Interface::~Interface()
 {
-
 	if (pidVideo !=0)
-	{
-		kill(pidVideo, SIGTERM);
-		waitpid(pidVideo, NULL, 0); 
-		// Destroy the windows we have created
-		cvDestroyWindow("Test Color Tracking");
-		cvDestroyWindow("Test Mask");
+	{	
+		if ( app != NULL)	
+		{
+			kill(pidVideo, SIGTERM);
+			waitpid(pidVideo, NULL, 0); 
+			// Destroy the windows we have created
+			cvDestroyWindow("Test Color Tracking");
+			cvDestroyWindow("Test Mask");
 
-		// Destroy the capture
-		cvReleaseCapture(&capture);
-
-		semctl (sem, 0, IPC_RMID, 0); // destruction semaphore
+			// Destroy the capture
+			cvReleaseCapture(&capture);
+			
+			struct shmid_ds shmid;
+			
+			shmctl(sharedIdX, IPC_RMID, &shmid);
+			shmdt(x);
+			
+			shmctl(sharedIdY, IPC_RMID, &shmid);
+			shmdt(y);
+			
+			semctl (sem, 0, IPC_RMID, 0); // destruction semaphore
+		}
+		else
+		{
+			delete x;
+			delete y;
+		}
 	}	
-
 }
 
 float Interface::GetX() 
 {
-	//miseAJour();
-	//return x;
-	semop (sem, &reserver, 1); //réservation ressource critique
-	float res = *x;
+	if ( app == NULL ) 
+	{
+		
+		struct sembuf reserver = {0, -1, 0};
+		struct sembuf liberer = {0, 1, 0};
+
+		semop (sem, &reserver, 1); //réservation ressource critique
+		float res = *x;
+		
+		// Arrondi du Float
+		int tmp =(int)(res * 100.0);
+		res = (float)(tmp)/100.0;
+		
+		//cerr << "X : " << res << endl;
+		semop (sem, &liberer, 1); 
+		// Inversion du sens...
+		return 1 - res;
+		
+		
+	}
+	else 
+	{
+		miseAJour();
+		return *x;
+	}
 	
-	// Arrondi du Float
-	int tmp =(int)(res * 100.0);
-	res = (float)(tmp)/100.0;
-	
-	cerr << "X : " << res << endl;
-	semop (sem, &liberer, 1); 
-	// Inversion du sens...
-	return 1.0 - res;
 }
 
 float Interface::Gety() 
 {
-	//miseAJour();
-	// return y;
-	semop (sem, &reserver, 1); //réservation ressource critique
-	float res = *y;
-	// Arrondi du Float
-	int tmp =(int)(res * 100.0);
-	res = (float)(tmp)/100.0;
-	semop (sem, &liberer, 1); 
-	return 1.0 - res;
+	if ( app == NULL ) 
+	{	
+		struct sembuf reserver = {0, -1, 0};
+		struct sembuf liberer = {0, 1, 0};
+
+		semop (sem, &reserver, 1); //réservation ressource critique
+		float res = *y;
+		
+		// Arrondi du Float
+		int tmp =(int)(res * 100.0);
+		res = (float)(tmp)/100.0;
+		
+		//cerr << "Y : " << res << endl;
+		semop (sem, &liberer, 1); 
+		// Inversion du sens...
+		return 1 - res;
+	}
+	else 
+	{
+		miseAJour();
+		return *y;
+	}
 }
 
 bool Interface::isMousePressed() 
 {
-	miseAJour();
-	return isPressed;
+	
+	if ( app != NULL )
+	{
+		miseAJour();
+		return isPressed;
+	}
+	else
+	{
+		return false;
+	}
 
-}
-
-void Interface::setPosition(float posx, float posy) 
-{
-	//*x = posx;
-	//*y = posy;
 }
 
 void Interface::setMousePressed(bool isMousePressed) 
@@ -163,8 +200,8 @@ void Interface::miseAJour()
 	if(app != NULL) 
 	{
 		const sf::Input& input = app->GetInput();
-		//*x = input.GetMouseX()/(float)app->GetWidth();
-		//*y = input.GetMouseY()/(float)app->GetHeight();
+		*x = input.GetMouseX()/(float)app->GetWidth();
+		*y = input.GetMouseY()/(float)app->GetHeight();
 		isPressed = input.IsMouseButtonDown(sf::Mouse::Left);
 	}
 }
@@ -204,6 +241,10 @@ void Interface::monSuperThread()
 */
 CvPoint Interface::binarisation(IplImage* image, int *nbPixels) 
 {
+	
+	struct sembuf reserver = {0, -1, 0};
+	struct sembuf liberer = {0, 1, 0};
+		
 	IplImage *hsv, *mask;
 	IplConvKernel *kernel;
 	int sommeX = 0, sommeY = 0;
@@ -336,16 +377,16 @@ void getObjectColor(int event, int x, int y, int flags, void *param)
 	if(event == CV_EVENT_LBUTTONUP)
 	{
 		// Get the hsv image
-		hsv = cvCloneImage(((Interface*)param)->image);
-		cvCvtColor(((Interface*)param)->image, hsv, CV_BGR2HSV);
+		hsv = cvCloneImage(((Interface*)param)->getImage());
+		cvCvtColor(((Interface*)param)->getImage(), hsv, CV_BGR2HSV);
 
 		// Get the selected pixel
 		pixel = cvGet2D(hsv, y, x);
 
 		// Change the value of the tracked color with the color of the selected pixel
-		((Interface*)param)->h = (int)pixel.val[0];
-		((Interface*)param)->s = (int)pixel.val[1];
-		((Interface*)param)->v = (int)pixel.val[2];
+		((Interface*)param)->setH((int)pixel.val[0]);
+		((Interface*)param)->setS((int)pixel.val[1]);
+		((Interface*)param)->setV((int)pixel.val[2]);
 
 		// Release the memory of the hsv image
 		cvReleaseImage(&hsv);

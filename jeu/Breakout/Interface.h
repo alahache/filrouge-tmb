@@ -12,19 +12,10 @@
 #include <sys/sem.h>
 #include <sys/wait.h>
 #include <sys/shm.h>
-
-// Maths methods
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define min(a, b) ((a) < (b) ? (a) : (b))  
-#define abs(x) ((x) > 0 ? (x) : -(x))
-#define sign(x) ((x) > 0 ? 1 : -1)
  
 // Step mooving for object min & max
 #define STEP_MIN 5
 #define STEP_MAX 100
-
-static struct sembuf reserver = {0, -1, 0};
-static struct sembuf liberer = {0, 1, 0};
 
 // Get the color of the pixel where the mouse has clicked
 void getObjectColor(int event, int x, int y, int flags, void *param = NULL);
@@ -42,16 +33,18 @@ class Interface {
         float Gety();
         
         bool isMousePressed();
-        
-        void setPosition(float x, float y);
+       
         void setMousePressed(bool isMousePressed);
         void monSuperThread();
         void miseAJour(); //Emulation de la webcam
         
+        inline IplImage* getImage() { return image; }
+        
+        void setH(int unH) { h = unH; }
+        void setS(int unS) { s = unS; }
+        void setV(int unV) { v = unV; }
         
         // Temporaire, fais des getters après...
-        IplImage *image;
-        int h,s,v, tolerance;
         
     private: 
 		
@@ -59,6 +52,11 @@ class Interface {
 		void addObjectToVideo(IplImage* image, CvPoint objectNextPos, int nbPixels);
 		// Transform the image into a two colored image, one color for the color we want to track, another color for the others colors
 		CvPoint binarisation(IplImage* image, int *nbPixels);
+		
+		int max(int a, int b) { return (a) > (b) ? (a) : (b); }
+		int min(int a, int b) { return (a) < (b) ? (a) : (b); }  
+		int abs(int x) { return (x) > 0 ? (x) : -(x); }
+		int sign(int x) { return (x) > 0 ? 1 : -1; }
     
     // ----------------------------------------------------------------
     // Attributs
@@ -71,11 +69,17 @@ class Interface {
         
         float *x;
 		float *y;
+		
+		int sharedIdX;
+		int sharedIdY;
         
         CvCapture *capture;
 		
 		int sem; // sémaphore
 		int pidVideo;
+		
+		IplImage *image;
+        int h,s,v, tolerance;
 		
 };
 
