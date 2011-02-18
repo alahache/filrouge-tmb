@@ -18,6 +18,7 @@ class Balle : public GameSprite {
        	void Update();
        	
        	// =================================== Public methods
+       	void Init();
        	void SetSpeed(float anySpeed);
        	void SetAngle(float anyAngle);
     

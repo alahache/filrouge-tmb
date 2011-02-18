@@ -7,6 +7,7 @@
 
 #include "Balle.h"
 #include "Barre.h"
+#include "Brique.h"
 
 BreakOut::BreakOut()
 	: Game(SCREEN_W, SCREEN_H, "BreakOut") {
@@ -17,11 +18,12 @@ BreakOut::BreakOut()
 
 BreakOut::~BreakOut() {
 	delete imgBarre;
+	delete imgBrique;
 	delete imgBalle;
 	delete imgBackground;
 	delete sprBackground;
-	delete text;
-	delete font;
+	//delete text;
+	//delete font;
 }
 
 void BreakOut::loadRessources() {
@@ -48,14 +50,21 @@ void BreakOut::loadRessources() {
 		std::cout << "ERREUR: chargement de l'image";
 	balle = new Balle(imgBalle, this);
 	AddSprite(balle);
+	
+	//Chargement des briques
+	imgBrique = new sf::Image();
+	if (!imgBrique->LoadFromFile("brique.png"))
+		std::cout << "ERREUR: chargement de l'image";
+	brique = new Brique(imgBrique, 100, 200, this, 2);
+	AddSprite(brique);
 
 	// Font
-	font = new sf::Font();
+	/*font = new sf::Font();
 	if (!font->LoadFromFile("arial.ttf"))
 		//return EXIT_FAILURE;
 		std::cout << "ERREUR: chargement de la font";
-	text = new sf::String("Score :", *font, 30);
-	text->SetColor(sf::Color(0, 0, 0));
+	text = new sf::String("Score :", sf::Font::GetDefaultFont(), 30);
+	text->SetColor(sf::Color(0, 0, 0));*/
 }
 
 
@@ -79,7 +88,13 @@ void BreakOut::SetInterface(Interface* myInterface) {
     interface = myInterface;
 }
 
+void BreakOut::Lost() {
+    isGameOn = false;
+}
+
 void BreakOut::initGame() {
+    dynamic_cast<Balle*>(balle)->Init();
+    dynamic_cast<Brique*>(brique)->Init();
     isGameOn = true;
     score=0;
 }
@@ -115,7 +130,7 @@ void BreakOut::Run() {
 		}
 		
 		// change text :
-		std::string txt("Score : ");
+		/*std::string txt("Score : ");
 		{
 			std::ostringstream os;
 			os << score;
@@ -124,7 +139,7 @@ void BreakOut::Run() {
 			}
 			txt += os.str();
 		}
-		text->SetText(txt);
+		text->SetText(txt);*/
 
 		// Clear screen
 		window->Clear(sf::Color(255, 255, 255));
@@ -138,7 +153,7 @@ void BreakOut::Run() {
 		}
 		
 		// Draw the string
-		window->Draw(*text);
+		//window->Draw(*text);
 
 		// Update the window
 		window->Display();

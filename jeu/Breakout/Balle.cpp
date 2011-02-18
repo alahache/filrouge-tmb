@@ -8,13 +8,7 @@
 Balle::Balle(sf::Image *img, BreakOut* pGame)
 	: GameSprite(img), game(pGame)
 {
-	SetX(game->GetBackground().GetSize().x / 2);
-	SetY(game->GetBackground().GetSize().y / 2);
-    
-    // Direction :
-    angle = -45;
-    speed = 15;
-    calculateDirection();
+    Init();
 }
 
 Balle::~Balle() {
@@ -24,10 +18,12 @@ Balle::~Balle() {
 void Balle::Update() {
 	
 	// Collisions with window edges :
-	if(X() <= game->GetBackground().GetPosition().x || X() >= game->GetBackground().GetSize().x)
+	if(X() <= game->GetBackground().GetPosition().x || X() >= game->GetBackground().GetSize().x - Width())
 		direction.x = -direction.x;
-	if(Y() <= game->GetBackground().GetPosition().y || Y() >= game->GetBackground().GetSize().y)
+	if(Y() <= game->GetBackground().GetPosition().y)
 		direction.y = -direction.y;
+    if(Y() >= game->GetBackground().GetSize().y - Height())
+        game->Lost();
 		
 	// Collisions with any Sprite :
 	for(int i=0; i<game->NbSprites(); i++) {
@@ -51,6 +47,16 @@ void Balle::Update() {
 	// Move the sprite :
 	Move(direction);
 	
+}
+
+void Balle::Init() {
+    SetX(game->GetBackground().GetSize().x / 2);
+	SetY(game->GetBackground().GetSize().y / 2);
+    
+    // Direction :
+    angle = 45;
+    speed = 15;
+    calculateDirection();
 }
 
 void Balle::SetSpeed(float unSpeed) {

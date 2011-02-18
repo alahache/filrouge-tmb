@@ -24,6 +24,7 @@ class BreakOut : public Game {
         // =================================== Getters / Setters
         void SetInterface(Interface* myInterface);
         Interface& GetInterface();
+        void Lost();
         
         GameSprite& GetBarre();
         GameSprite& GetBalle();
@@ -42,6 +43,9 @@ class BreakOut : public Game {
         
         sf::Image* imgBarre;
         GameSprite* barre;
+        
+        sf::Image* imgBrique;
+        GameSprite* brique;
         
         sf::Image* imgBackground;
         sf::Sprite* sprBackground;
