@@ -27,13 +27,11 @@ class GameSprite : public sf::Sprite {
 		const sf::FloatRect& GetHitBox();
 
 		// =================================== Setters
-		void SetParent(GameSprite* pParent);
 
 	protected:
 
 		// =================================== Attributes
 		std::string type;
-		GameSprite *parent;
 		sf::FloatRect hitBox;
 };
 
