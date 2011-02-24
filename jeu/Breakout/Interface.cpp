@@ -4,16 +4,16 @@
 
 #define KEYX 5678
 #define KEYY 5679
+#define KEYAFFICHE 12349
 #define KEYSEM 1234
+#define KEYSEMAFFICHE 1235
 
 using namespace std;
 
-// TODO :
-// Méthode d'affichage/supression de la fenetre cam...
-// Gérer les exceptions d'erreurs mémoire...
-
 Interface::Interface() 
 {
+	
+	pidVideo = 0;
 
     if ((sharedIdX = shmget(KEYX, sizeof(float), IPC_CREAT | 0666)) < 0) 
     {
@@ -38,6 +38,18 @@ Interface::Interface()
     *x = -1;
     *y = -1;
     
+    if ((sharedIdAffiche = shmget(KEYAFFICHE, sizeof(int), IPC_CREAT | 0666)) < 0) 
+    {
+		cerr << "shgetAffiche" << endl;
+    }
+    
+    if ((affiche = (int*)shmat(sharedIdAffiche, NULL, 0)) == (int*)-1) 
+    {
+        cerr << "shmatAffiche" << endl;
+    }
+    
+    *affiche = 1;
+    
 	app = NULL;
 	objectPos = cvPoint(-1, -1);
 	h = 0; 
@@ -53,15 +65,6 @@ Interface::Interface()
 		cerr << "Can't initialize the video capture" << endl;
 	}
 
-	// Create the windows
-	cvNamedWindow("Test Color Tracking", CV_WINDOW_AUTOSIZE);
-	cvNamedWindow("Test Mask", CV_WINDOW_AUTOSIZE);
-	cvMoveWindow("Test Color Tracking", 0, 100);
-	cvMoveWindow("Test Mask", 650, 100);
-
-	// Mouse event to select the tracked color on the original image
-	cvSetMouseCallback("Test Color Tracking", getObjectColor, this);
-
 	sem = semget(KEYSEM, 1, IPC_CREAT);
 	if (sem<0) 
 	{	
@@ -71,11 +74,23 @@ Interface::Interface()
 	{
 		semctl(sem, 0, SETVAL, 1);
 	} 
+	
+	semAffiche = semget(KEYSEMAFFICHE, 1, IPC_CREAT);
+	if (semAffiche<0) 
+	{	
+		cerr << "unable to obtain semaphore" << endl;
+	}
+	else
+	{
+		semctl(semAffiche, 0, SETVAL, 1);
+	} 
 
 	pidVideo = fork();
 	
 	if (pidVideo == 0)
 	{
+		
+		afficherFenetre();
 		monSuperThread();
 	}
 	
@@ -88,15 +103,20 @@ Interface::Interface(sf::RenderWindow* myApp)
 
 Interface::~Interface()
 {
+	
 	if (pidVideo !=0)
 	{	
-		if ( app != NULL)	
+		if ( app == NULL)	
 		{
-			kill(pidVideo, SIGTERM);
-			waitpid(pidVideo, NULL, 0); 
-			// Destroy the windows we have created
-			cvDestroyWindow("Test Color Tracking");
-			cvDestroyWindow("Test Mask");
+			kill(pidVideo, SIGINT);
+			waitpid(pidVideo, NULL, 0);
+			
+			if ( affiche )
+			{
+				// Destroy the windows we have created
+				cvDestroyWindow("Test Color Tracking");
+				cvDestroyWindow("Test Mask");
+			}
 
 			// Destroy the capture
 			cvReleaseCapture(&capture);
@@ -109,6 +129,10 @@ Interface::~Interface()
 			shmctl(sharedIdY, IPC_RMID, &shmid);
 			shmdt(y);
 			
+			shmctl(sharedIdAffiche, IPC_RMID, &shmid);
+			shmdt(affiche);
+			semctl (semAffiche, 0, IPC_RMID, 0); // destruction semaphore
+			
 			semctl (sem, 0, IPC_RMID, 0); // destruction semaphore
 		}
 		else
@@ -116,7 +140,7 @@ Interface::~Interface()
 			delete x;
 			delete y;
 		}
-	}	
+	}
 }
 
 float Interface::GetX() 
@@ -206,13 +230,53 @@ void Interface::miseAJour()
 	}
 }
 
+void Interface::afficherFenetre() 
+{
+	
+	//if ( pidVideo != 0 )
+	{
+		//kill(pidVideo, SIGUSR1);
+	}
+	
+	//cerr << pidVideo << " ba alors ???? " << endl;
+	//cvNamedWindow("Test Color Tracking");
+	//cvNamedWindow("Test Mask");
+	//cvMoveWindow("Test Color Tracking", 0, 100);
+	//cvMoveWindow("Test Mask", 650, 100);
+
+	// Mouse event to select the tracked color on the original image
+	//cvSetMouseCallback("Test Color Tracking", getObjectColor, this);
+
+	
+	struct sembuf reserver = {0, -1, 0};
+	struct sembuf liberer = {0, 1, 0};
+
+	semop (semAffiche, &reserver, 1);
+	*affiche = 1;
+	semop (semAffiche, &liberer, 1); 
+	
+}
+
+void Interface::supprimerFenetre() 
+{
+	cvDestroyWindow("Test Color Tracking");
+	cvDestroyWindow("Test Mask");
+	
+	struct sembuf reserver = {0, -1, 0};
+	struct sembuf liberer = {0, 1, 0};
+
+	semop (semAffiche, &reserver, 1);
+	*affiche = 0;
+	semop (semAffiche, &liberer, 1); 
+}
+
 void Interface::monSuperThread() 
 {
 	char key ='A';
 	int nbPixels = 0;
 	
 	while (key != 'q' && key !='Q')
-	{
+	{	
 		image = cvQueryFrame(capture);
 
 		// If there is no image, we exit the loop
@@ -221,13 +285,19 @@ void Interface::monSuperThread()
 			continue;
 		}
 		
-		cerr << " X : " << *x << " & Y : " << *y << endl;
+		//cerr << " X : " << *x << " & Y : " << *y << endl;
 
 		objectPos = binarisation(image, &nbPixels);
 		addObjectToVideo(image, objectPos, nbPixels);
 
 		// We wait 10 ms
 		key = cvWaitKey(10);
+		
+		if ( key == 'o' || key == 'O' )
+		{
+			supprimerFenetre();
+		}
+		
 	}
 }
 
@@ -282,8 +352,13 @@ CvPoint Interface::binarisation(IplImage* image, int *nbPixels)
 		}
 	}
 
-	// Show the result of the mask image
-	cvShowImage("Test Mask", mask);
+	semop (semAffiche, &reserver, 1);
+	if ( *affiche )
+	{
+		// Show the result of the mask image
+		cvShowImage("Test Mask", mask);
+	}
+	semop (semAffiche, &liberer, 1); 
 
 	// We release the memory of kernels
 	cvReleaseStructuringElement(&kernel);
@@ -359,8 +434,18 @@ void Interface::addObjectToVideo(IplImage* image, CvPoint objectNextPos, int nbP
 		cvDrawCircle(image, objectPos, 15, CV_RGB(255, 0, 0), -1);
 	}
 	
-	// We show the image on the window
-	cvShowImage("Test Color Tracking", image);
+	
+	struct sembuf reserver = {0, -1, 0};
+	struct sembuf liberer = {0, 1, 0};
+
+	semop (semAffiche, &reserver, 1);
+	if ( *affiche )
+	{
+		// We show the image on the window
+		cvShowImage("Test Color Tracking", image);
+		cvSetMouseCallback("Test Color Tracking", getObjectColor, this);
+	}
+	semop (semAffiche, &liberer, 1);
 
 }
 
@@ -373,9 +458,14 @@ void getObjectColor(int event, int x, int y, int flags, void *param)
 	// Vars
 	CvScalar pixel;
 	IplImage *hsv;
-
+	
+	//cerr << getpid() << " --> blabla" << endl;
+	
 	if(event == CV_EVENT_LBUTTONUP)
 	{
+		
+		//cerr << getpid() << " --> buttonnnnnn" << endl;
+		
 		// Get the hsv image
 		hsv = cvCloneImage(((Interface*)param)->getImage());
 		cvCvtColor(((Interface*)param)->getImage(), hsv, CV_BGR2HSV);

@@ -38,6 +38,9 @@ class Interface {
         void monSuperThread();
         void miseAJour(); //Emulation de la webcam
         
+        void afficherFenetre();
+        void supprimerFenetre(); 
+        
         inline IplImage* getImage() { return image; }
         
         void setH(int unH) { h = unH; }
@@ -80,6 +83,11 @@ class Interface {
 		
 		IplImage *image;
         int h,s,v, tolerance;
+        
+        int sharedIdAffiche;
+        // Pour plus de facilité, mais utilisé comme un bool
+        int *affiche;
+        int semAffiche;
 		
 };
 

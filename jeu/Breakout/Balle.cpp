@@ -40,7 +40,7 @@ void Balle::MajPositions() {
 		direction.y = -direction.y;
 		
 	// Collisions avec les sprites du jeu :
-	for(int i=0; i<jeu->NbSprites(); i++) {
+	for(unsigned int i=0; i<jeu->NbSprites(); i++) {
 	
 		sf::Sprite* sprCourant = jeu->GetSprite(i);
 		if(sprCourant == this) continue;

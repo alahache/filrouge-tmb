@@ -107,7 +107,15 @@ void BreakOut::Run() {
                 if(!isGameOn && Event.Key.Code == sf::Key::Return) {
                     initGame();
                 }
+                
+                if(Event.Key.Code == sf::Key::O)
+                {
+					//cerr << "heuuuuuuuuuu"<< endl;
+ 					interface->afficherFenetre();
+				}
             }
+            
+            
         }
         
         if(isGameOn) {
@@ -141,7 +149,7 @@ void BreakOut::Run() {
         app->Draw(*sprBackground);
         
         // Draw all the objects on the window
-        for(int i=0; i<listeSprites.size(); i++) {
+        for(unsigned int i=0; i<listeSprites.size(); i++) {
         	app->Draw(*(listeSprites[i]));
         }
         
