@@ -19,7 +19,7 @@ class GameSprite : public sf::Sprite {
 		virtual void HitBy(GameSprite* pSpr);
 
 		// =================================== Getters
-		virtual std::string GetType();
+		std::string GetType();
 		float X();
 		float Y();
 		float Width();
@@ -27,14 +27,12 @@ class GameSprite : public sf::Sprite {
 		const sf::FloatRect& GetHitBox();
 
 		// =================================== Setters
-		void SetParent(GameSprite* pParent);
 
 	protected:
 
 		// =================================== Attributes
-		GameSprite *parent;
-		sf::FloatRect hitBox;
 		std::string type;
+		sf::FloatRect hitBox;
 };
 
 #endif

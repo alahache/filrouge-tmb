@@ -17,9 +17,6 @@ GameSprite::GameSprite(sf::Image *pImg)
     hitBox.Right 	= GetSize().x;
     hitBox.Bottom 	= GetSize().y;
     
-    // Parent :
-    parent = 0;
-    
 }
 
 GameSprite::~GameSprite() {
@@ -50,7 +47,7 @@ void GameSprite::HitBy(GameSprite* pSpr) {
 }
 
 std::string GameSprite::GetType() {
-	return 0;
+	return type;
 }
 
 float GameSprite::X() {
@@ -73,6 +70,3 @@ const sf::FloatRect& GameSprite::GetHitBox() {
     return hitBox;
 }
 
-void GameSprite::SetParent(GameSprite* pParent) {
-	parent = pParent;
-}

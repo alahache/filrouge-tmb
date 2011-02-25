@@ -35,7 +35,7 @@ void Balle::Update() {
 		if(!Hits(currentSpr)) continue;
 		
 		// Actions depending on Sprite's type :
-		if(currentSpr == &(game->GetBarre())) {
+		if(currentSpr->GetType()=="barre") {
 		
 			// direction control : (between 30 and 160 degrees)
 			angle = (120.0/currentSpr->Width()) * ((currentSpr->X() + currentSpr->Width()) - (X() + (Width() / 2))) + 30.0;
@@ -50,11 +50,15 @@ void Balle::Update() {
 }
 
 void Balle::Init() {
-    SetX(game->GetBackground().GetSize().x / 2);
+    // Type :
+	type = "balle";
+
+	// Position :
+	SetX(game->GetBackground().GetSize().x / 2);
 	SetY(game->GetBackground().GetSize().y / 2);
     
     // Direction :
-    angle = 45;
+    angle = -45;
     speed = 15;
     calculateDirection();
 }
