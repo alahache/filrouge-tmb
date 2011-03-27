@@ -8,6 +8,7 @@
 Brique::Brique(sf::Image *img, int xinit, int yinit, BreakOut* pGame, int linitLife)
 	: GameSprite(img), game(pGame), initLife(linitLife)
 {
+    type = "brique";
     SetPosition(xinit, yinit);
     Init();
 }
@@ -22,6 +23,10 @@ void Brique::Init() {
 
 void Brique::SetLife(int laVie) {
 	life = laVie;
+}
+
+void Brique::Hit() {
+    life--;
 }
 
 bool Brique::IsLiving() {

@@ -17,6 +17,7 @@ class Brique : public GameSprite {
        	// =================================== Public methods
        	void Init();
        	void SetLife(int laVie);
+       	void Hit(); //touché par la balle
        	bool IsLiving();
     
     protected:

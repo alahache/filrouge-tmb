@@ -9,6 +9,8 @@
 #include "Barre.h"
 #include "Brique.h"
 
+#define MAX_BRIQUES 10
+
 BreakOut::BreakOut()
 	: Game(SCREEN_W, SCREEN_H, "BreakOut") {
 	
@@ -55,8 +57,12 @@ void BreakOut::loadRessources() {
 	imgBrique = new sf::Image();
 	if (!imgBrique->LoadFromFile("brique.png"))
 		std::cout << "ERREUR: chargement de l'image";
-	brique = new Brique(imgBrique, 100, 200, this, 2);
-	AddSprite(brique);
+	brique.resize(MAX_BRIQUES);
+	for(int i=0; i<MAX_BRIQUES; i++) {
+	    Brique* uneBrique = new Brique(imgBrique, 100 + i*(imgBrique->GetWidth()+20), 200, this, 2);
+    	AddSprite(uneBrique);
+    	brique[i] = uneBrique;
+	}
 
 	// Font
 	/*font = new sf::Font();
@@ -94,7 +100,8 @@ void BreakOut::Lost() {
 
 void BreakOut::initGame() {
     dynamic_cast<Balle*>(balle)->Init();
-    dynamic_cast<Brique*>(brique)->Init();
+    for(int i=0; i<MAX_BRIQUES; i++)
+        dynamic_cast<Brique*>(brique[i])->Init();
     isGameOn = true;
     score=0;
 }
@@ -149,7 +156,8 @@ void BreakOut::Run() {
 		
 		// Draw all the objects on the window
 		for(int i=0; i<sprites.size(); i++) {
-			window->Draw(*(sprites[i]));
+		    if(dynamic_cast<Brique*>(sprites[i]) == NULL || dynamic_cast<Brique*>(sprites[i])->IsLiving()) //N'affiche pas les briques touchees
+			    window->Draw(*(sprites[i]));
 		}
 		
 		// Draw the string

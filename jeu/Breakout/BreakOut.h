@@ -45,7 +45,7 @@ class BreakOut : public Game {
         GameSprite* barre;
         
         sf::Image* imgBrique;
-        GameSprite* brique;
+        std::vector<GameSprite*> brique;
         
         sf::Image* imgBackground;
         sf::Sprite* sprBackground;
