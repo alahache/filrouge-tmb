@@ -71,8 +71,8 @@ void Balle::Update() {
 		    }
 		    std::cout << atan(dy/dx) << std::endl;
 		    SetAngle(tan(dy/dx)*180/PI);
-		    system("sleep 1");
-		    assert(dx != olddx || dy != olddy);
+		    //system("sleep 1");
+		    //assert(dx != olddx && dy != olddy);
 		    dynamic_cast<Brique*>(currentSpr)->Hit();
 		}
 	}
