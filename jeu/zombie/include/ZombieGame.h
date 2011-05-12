@@ -34,6 +34,7 @@ class ZombieGame : public Game {
         Interface* interface;
         sf::Image* sprzombie;
         AnimatedSprite* zombie;
+        sf::Image* sprFond;
 };
 
 #endif

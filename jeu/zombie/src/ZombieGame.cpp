@@ -21,6 +21,10 @@ void ZombieGame::loadRessources() {
 	if (!sprzombie->LoadFromFile("images/zombie.png"))
 		std::cout << "ERREUR: chargement de l'image";
 	
+	sprfond = new sf::Image();
+	if (!sprzombie->LoadFromFile("images/fong.png"))
+		std::cout << "ERREUR: chargement de l'image";
+	
 	zombie = new AnimatedSprite(sprzombie, 5, 5, 5, 50, 88);
 	AddSprite(zombie);
 }
@@ -63,6 +67,8 @@ void ZombieGame::Run() {
 
 		// Clear screen
 		window->Clear(sf::Color(255, 255, 255));
+		
+		window->Draw(*(sprfond));
 		
 		// Draw all the objects on the window
 		for(int i=0; i<sprites.size(); i++) {
