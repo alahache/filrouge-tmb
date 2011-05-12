@@ -5,10 +5,6 @@
 
 #include "ZombieGame.h"
 
-#include "Balle.h"
-#include "Barre.h"
-#include "Brique.h"
-
 ZombieGame::ZombieGame()
 	: Game(SCREEN_W, SCREEN_H, "ZombieGame") {
 	
@@ -63,8 +59,7 @@ void ZombieGame::Run() {
 		
 		// Draw all the objects on the window
 		for(int i=0; i<sprites.size(); i++) {
-		    if(dynamic_cast<Brique*>(sprites[i]) == NULL || dynamic_cast<Brique*>(sprites[i])->IsLiving()) //N'affiche pas les briques touchees
-			    window->Draw(*(sprites[i]));
+			window->Draw(*(sprites[i]));
 		}
 		
 		// Update the window

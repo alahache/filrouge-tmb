@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "BreakOut.h"
+#include "ZombieGame.h"
 
 using namespace std;
 
@@ -12,9 +12,9 @@ using namespace std;
  */
 
 int main() {
-    BreakOut bo;
-    Interface* inter = new Interface(bo.GetWindow()); //Emulation de la webcam
-    bo.SetInterface(inter);
-    bo.Run();
+    ZombieGame z;
+    Interface* inter = new Interface(z.GetWindow()); //Emulation de la webcam
+    z.SetInterface(inter);
+    z.Run();
     return 0;
 }

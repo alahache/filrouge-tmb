@@ -5,3 +5,6 @@
 
 #Ignorer l'exécutable du jeu Breakout
 jeu/Breakout/BreakOut
+
+#Ignorer l'exécutable du jeu Zombie
+jeu/zombie/zombie
