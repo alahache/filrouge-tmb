@@ -6,6 +6,7 @@
 
 #include "Interface.h"
 #include "Game.h"
+#include "AnimatedSprite.h"
 
 class ZombieGame : public Game {
     public:
@@ -14,12 +15,11 @@ class ZombieGame : public Game {
         static const int SCREEN_H = 600;
     	
     	// =================================== Constructors / Destructor
-        BreakOut();
-        ~BreakOut();
+        ZombieGame();
+        ~ZombieGame();
         
         // =================================== Redefined methods
         void Run();
-        //GameSprite* CreateSprite(std::string type);
         
         // =================================== Getters / Setters
         void SetInterface(Interface* myInterface);
@@ -32,6 +32,8 @@ class ZombieGame : public Game {
         
         // =================================== Attributes
         Interface* interface;
+        sf::Image* sprzombie;
+        AnimatedSprite* zombie;
 };
 
 #endif

@@ -5,10 +5,6 @@
 
 #include "ZombieGame.h"
 
-#include "Balle.h"
-#include "Barre.h"
-#include "Brique.h"
-
 ZombieGame::ZombieGame()
 	: Game(SCREEN_W, SCREEN_H, "ZombieGame") {
 	
@@ -21,7 +17,12 @@ ZombieGame::~ZombieGame() {
 }
 
 void ZombieGame::loadRessources() {
-
+	sprzombie = new sf::Image();
+	if (!sprzombie->LoadFromFile("images/zombie.png"))
+		std::cout << "ERREUR: chargement de l'image";
+	
+	zombie = new AnimatedSprite(sprzombie, 5, 5, 5, 50, 88);
+	AddSprite(zombie);
 }
 
 void ZombieGame::initGame() {
@@ -52,6 +53,8 @@ void ZombieGame::Run() {
 		
 		if(isGameOn) {
 		
+			zombie->Animate();
+		
 			// Update all sprites :
 			for(int i=0; i<sprites.size(); i++) {
 				sprites[i]->Update();
@@ -63,8 +66,7 @@ void ZombieGame::Run() {
 		
 		// Draw all the objects on the window
 		for(int i=0; i<sprites.size(); i++) {
-		    if(dynamic_cast<Brique*>(sprites[i]) == NULL || dynamic_cast<Brique*>(sprites[i])->IsLiving()) //N'affiche pas les briques touchees
-			    window->Draw(*(sprites[i]));
+			window->Draw(*(sprites[i]));
 		}
 		
 		// Update the window

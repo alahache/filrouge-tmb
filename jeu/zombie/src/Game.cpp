@@ -5,9 +5,9 @@
 
 //================================================================ PUBLIC
 
-Game::Game(unsigned int w, unsigned int h, std::string title) {
+Game::Game(unsigned int w, unsigned int h, std::string title, unsigned int _fps) : fps(_fps) {
 	window = new sf::RenderWindow(sf::VideoMode(w, h), title.c_str());
-    window->SetFramerateLimit(35);
+    window->SetFramerateLimit(fps);
 }
 
 Game::~Game() {
@@ -30,4 +30,8 @@ unsigned int Game::NbSprites() {
 
 sf::RenderWindow* Game::GetWindow() {
 	return window;
+}
+
+unsigned int Game::GetFps() {
+	return fps;
 }
