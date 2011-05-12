@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "game.h"
+#include "Bombe.h"
 
 
 class ZombieGame;
@@ -33,6 +34,7 @@ class Catapulte
 
 		// =================================== Attributes
 		ZombieGame* game;
+		Bombe* bombe;
 		
 		// Define the first point :
 		float xAttLeft;
@@ -43,15 +45,15 @@ class Catapulte
 		float yAttRight;
 		
 		// Define the Bombe position :
-		float xBombe;
-		float yBombe;
+		sf::Vector2f posBombe;
 		
 		// Define the two lines :
 		sf::Shape* line1;
 		sf::Shape* line2;
 		
-		// TODO : Properties :
-		//Thickness, Color
+		// Lines properties :
+		thickness = 20;
+		color : sf::Color::Black;
 		
 		// =================================== Protected methods
         void drawLines();

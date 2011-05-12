@@ -15,7 +15,9 @@ Catapulte::Catapulte()
 	xAttRight = 0;
 	yAttRight = 0;
 
-    //    
+	// Define the lines :
+	line1 = new sf::Shape::Line(xAttLeft, yAttLeft, xBombe, yBombe, thickness, color);
+	line2 = new sf::Shape::Line(xAttRight, xAttRight, xBombe, yBombe, thickness, color);
 }
 
 Catapulte::~Catapulte()
@@ -29,9 +31,8 @@ void Catapulte::Update()
 {
 	if(isMousePressed)
 	{
-		//bombe.getPosBombe (x et y)
-		//SetPosBombe(x, y);
-	
+		posBombe = bombe->GetPosBombe();
+		SetPosBombe(posBombe.x, posBombe.y);
 		drawLines();
 	}
 	else
@@ -52,6 +53,6 @@ void Catapulte::SetPosBombe(float anyXBombe, float anyYBombe)
 
 void Catapulte::drawLines()
 {
-	line1 = new sf::Shape::Line(xAttLeft, yAttLeft, xBombe, yBombe, Thickness, Color);
-	line2 = new sf::Shape::Line(xAttRight, xAttRight, xBombe, yBombe, Thickness, Color);
+	ZombieGame->GetWindow()->Draw(line1);
+	ZombieGame->GetWindow()->Draw(line2);
 }
