@@ -1,5 +1,8 @@
 
+#include <iostream>
 #include "AnimatedSprite.h"
+
+using namespace std;
 
 //================================================================ PUBLIC
 
@@ -10,6 +13,7 @@ AnimatedSprite::AnimatedSprite(sf::Image *pImg, int _fpi, int _ncols, int _nbimg
 	offsetY = 0;
 	index = 0;
 	fcount = 0;
+	SetSubRect(sf::IntRect(offsetX, offsetY, offsetX+imgwidth, offsetY+imgheight));
 }
 
 AnimatedSprite::~AnimatedSprite() {
@@ -19,7 +23,7 @@ AnimatedSprite::~AnimatedSprite() {
 void AnimatedSprite::Animate() {
 	if(fcount == fpi)
 	{
-		if(index>nbimgs) index = 0;
+		if(index>=nbimgs) index = 0;
 		offsetX = imgwidth*(index%ncols);
 		offsetY = imgheight*(index/ncols);
 		index++;

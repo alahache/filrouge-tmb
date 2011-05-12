@@ -17,7 +17,12 @@ ZombieGame::~ZombieGame() {
 }
 
 void ZombieGame::loadRessources() {
-
+	sprzombie = new sf::Image();
+	if (!sprzombie->LoadFromFile("images/zombie.png"))
+		std::cout << "ERREUR: chargement de l'image";
+	
+	zombie = new AnimatedSprite(sprzombie, 5, 5, 5, 50, 88);
+	AddSprite(zombie);
 }
 
 void ZombieGame::initGame() {
@@ -47,6 +52,8 @@ void ZombieGame::Run() {
 		}
 		
 		if(isGameOn) {
+		
+			zombie->Animate();
 		
 			// Update all sprites :
 			for(int i=0; i<sprites.size(); i++) {

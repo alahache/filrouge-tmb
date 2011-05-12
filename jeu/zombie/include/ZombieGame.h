@@ -6,6 +6,7 @@
 
 #include "Interface.h"
 #include "Game.h"
+#include "AnimatedSprite.h"
 
 class ZombieGame : public Game {
     public:
@@ -31,6 +32,8 @@ class ZombieGame : public Game {
         
         // =================================== Attributes
         Interface* interface;
+        sf::Image* sprzombie;
+        AnimatedSprite* zombie;
 };
 
 #endif
