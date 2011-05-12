@@ -19,19 +19,14 @@ class Balle : public GameSprite {
        	
        	// =================================== Public methods
        	void Init();
-       	void SetSpeed(float anySpeed);
-       	void SetAngle(float anyAngle);
     
     protected:
     
     	// =================================== Attributes
     	BreakOut* game;
         sf::Vector2f direction;
-        float speed;
-        float angle;
         
         // =================================== Protected methods
-        void calculateDirection();
 };
 
 #endif
