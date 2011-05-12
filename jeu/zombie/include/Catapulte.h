@@ -1,10 +1,9 @@
 #ifndef CATAPULTE_H
 #define CATAPULTE_H
 
-#include <string>
 #include <SFML/Graphics.hpp>
 
-#include "game.h"
+#include "Game.h"
 #include "Bombe.h"
 
 
@@ -48,12 +47,12 @@ class Catapulte
 		sf::Vector2f posBombe;
 		
 		// Define the two lines :
-		sf::Shape* line1;
-		sf::Shape* line2;
+		sf::Shape line1;
+		sf::Shape line2;
 		
 		// Lines properties :
-		thickness = 20;
-		color : sf::Color::Black;
+		//int thickness = 20;
+		//color : sf::Color::Black;
 		
 		// =================================== Protected methods
         void drawLines();
