@@ -7,14 +7,6 @@
 #define KEYAFFICHE 12349
 #define KEYSEM 1234
 #define KEYSEMAFFICHE 1235
-#define KEYISPRESSED 1236
-#define KEYSEMCLICK 1237
-
-#define TOLERANCE 10
-
-#define NBPIXELSMIN 10
-
-#define SEUILAPPROCHE 0.15
 
 using namespace std;
 
@@ -58,49 +50,12 @@ Interface::Interface()
     
     *affiche = 1;
     
-    if ((sharedIdisPressed = shmget(KEYISPRESSED, sizeof(bool), IPC_CREAT | 0666)) < 0) 
-    {
-		cerr << "shgetisPressed" << endl;
-    }
-    
-    if ((isPressed = (bool*)shmat(sharedIdisPressed, NULL, 0)) == (bool*)-1) 
-    {
-        cerr << "shmatisPressed" << endl;
-    }
-    
-    *isPressed = false;
-    
-     // Position du click et de son point.
-	clickPos = cvPoint(-1, -1);
-	xClick = -1;
-	yClick = -1;
-	
-	// Couleur du click.
-	hClick = 0;
-	sClick = 0;
-	vClick = 0;
-	toleranceClick = TOLERANCE;
-	
-	// Sémaphore pour isPressed.
-	int semClick;
-	semClick = semget(KEYSEMCLICK, 1, IPC_CREAT);
-	if (semClick<0) 
-	{	
-		cerr << "semClick Error" << endl;
-	}
-	else
-	{
-		semctl(semClick, 0, SETVAL, 1);
-	} 
-	
-	toChoose = TRACKING;
-    
 	app = NULL;
 	objectPos = cvPoint(-1, -1);
 	h = 0; 
 	s = 0;
 	v = 0;
-	tolerance = TOLERANCE;
+	tolerance = 10;
 
 	capture = cvCreateCameraCapture(200);
 
@@ -113,7 +68,7 @@ Interface::Interface()
 	sem = semget(KEYSEM, 1, IPC_CREAT);
 	if (sem<0) 
 	{	
-		cerr << "semAffiche Error" << endl;
+		cerr << "unable to obtain semaphore" << endl;
 	}
 	else
 	{
@@ -123,7 +78,7 @@ Interface::Interface()
 	semAffiche = semget(KEYSEMAFFICHE, 1, IPC_CREAT);
 	if (semAffiche<0) 
 	{	
-		cerr << "semAffiche Error" << endl;
+		cerr << "unable to obtain semaphore" << endl;
 	}
 	else
 	{
@@ -161,7 +116,6 @@ Interface::~Interface()
 				// Destroy the windows we have created
 				cvDestroyWindow("Test Color Tracking");
 				cvDestroyWindow("Test Mask");
-				cvDestroyWindow("Test Mask Click");
 			}
 
 			// Destroy the capture
@@ -180,11 +134,6 @@ Interface::~Interface()
 			semctl (semAffiche, 0, IPC_RMID, 0); // destruction semaphore
 			
 			semctl (sem, 0, IPC_RMID, 0); // destruction semaphore
-			
-			shmctl(sharedIdisPressed, IPC_RMID, &shmid);
-			shmdt(isPressed);
-			semctl (semClick, 0, IPC_RMID, 0); // destruction semaphore
-			
 		}
 		else
 		{
@@ -259,20 +208,14 @@ bool Interface::isMousePressed()
 	}
 	else
 	{
-		struct sembuf reserver = {0, -1, 0};
-		struct sembuf liberer = {0, 1, 0};
-
-		semop (semClick, &reserver, 1);
-		bool res = *isPressed;
-		semop (semClick, &liberer, 1); 
-		return res;
+		return false;
 	}
 
 }
 
 void Interface::setMousePressed(bool isMousePressed) 
 {
-	*isPressed = isMousePressed;
+	isPressed = isMousePressed;
 }
 
 void Interface::miseAJour() 
@@ -282,7 +225,7 @@ void Interface::miseAJour()
 		const sf::Input& input = app->GetInput();
 		*x = input.GetMouseX()/(float)app->GetWidth();
 		*y = input.GetMouseY()/(float)app->GetHeight();
-		*isPressed = input.IsMouseButtonDown(sf::Mouse::Left);
+		isPressed = input.IsMouseButtonDown(sf::Mouse::Left);
 	}
 }
 
@@ -317,7 +260,6 @@ void Interface::supprimerFenetre()
 {
 	cvDestroyWindow("Test Color Tracking");
 	cvDestroyWindow("Test Mask");
-	cvDestroyWindow("Test Mask Click");
 	
 	struct sembuf reserver = {0, -1, 0};
 	struct sembuf liberer = {0, 1, 0};
@@ -331,7 +273,6 @@ void Interface::monSuperThread()
 {
 	char key ='A';
 	int nbPixels = 0;
-	int nbPixelsClick = 0;
 	
 	while (key != 'q' && key !='Q')
 	{	
@@ -345,8 +286,8 @@ void Interface::monSuperThread()
 		
 		//cerr << " X : " << *x << " & Y : " << *y << endl;
 
-		binarisation(image, &nbPixels, &nbPixelsClick);
-		addObjectsToVideo(image, objectPos, nbPixels, clickPos, nbPixelsClick);
+		objectPos = binarisation(image, &nbPixels);
+		addObjectToVideo(image, objectPos, nbPixels);
 
 		// We wait 10 ms
 		key = cvWaitKey(10);
@@ -359,28 +300,27 @@ void Interface::monSuperThread()
 	}
 }
 
+
+
 // méthodes privées
 
 /*
 * Transform the image into a two colored image, one color for the color we want to track, another color for the others colors
 * From this image, we get two datas : the number of pixel detected, and the center of gravity of these pixel
 */
-void Interface::binarisation(IplImage* image, int *nbPixels, int *nbPixelsClick) 
+CvPoint Interface::binarisation(IplImage* image, int *nbPixels) 
 {
 	
 	struct sembuf reserver = {0, -1, 0};
 	struct sembuf liberer = {0, 1, 0};
 		
-	IplImage *hsv, *mask, *maskClick;
+	IplImage *hsv, *mask;
 	IplConvKernel *kernel;
 	int sommeX = 0, sommeY = 0;
-	int sommeXClick = 0, sommeYClick = 0;
 	*nbPixels = 0;
-	*nbPixelsClick = 0;
 
 	// Create the mask &initialize it to white (no color detected)
 	mask = cvCreateImage(cvGetSize(image), image->depth, 1);
-	maskClick = cvCreateImage(cvGetSize(image), image->depth, 1);
 
 	// Create the hsv image
 	hsv = cvCloneImage(image);
@@ -388,7 +328,6 @@ void Interface::binarisation(IplImage* image, int *nbPixels, int *nbPixelsClick)
 
 	// We create the mask
 	cvInRangeS(hsv, cvScalar(h - tolerance -1, s - tolerance, 0), cvScalar(h + tolerance -1, s + tolerance, 255), mask);
-	cvInRangeS(hsv, cvScalar(hClick - toleranceClick -1, sClick - toleranceClick, 0), cvScalar(hClick + toleranceClick -1, sClick + toleranceClick, 255), maskClick);
 
 	// Create kernels for the morphological operation
 	kernel = cvCreateStructuringElementEx(5, 5, 2, 2, CV_SHAPE_ELLIPSE);
@@ -396,8 +335,6 @@ void Interface::binarisation(IplImage* image, int *nbPixels, int *nbPixelsClick)
 	// Morphological opening (inverse because we have white pixels on black background)
 	cvDilate(mask, mask, kernel, 1);
 	cvErode(mask, mask, kernel, 1);  
-	cvDilate(maskClick, maskClick, kernel, 1);
-	cvErode(maskClick, maskClick, kernel, 1);  
 
 	// We go through the mask to look for the tracked object and get its gravity center
 	for(int i = 0; i < mask->width; i++) 
@@ -411,13 +348,6 @@ void Interface::binarisation(IplImage* image, int *nbPixels, int *nbPixelsClick)
 				sommeY += j;
 				(*nbPixels)++;
 			}
-			// If its a tracked Click pixel, count it to the center of gravity's calcul
-			if(((uchar *)(maskClick->imageData + j*maskClick->widthStep))[i] == 255) 
-			{
-				sommeXClick += i;
-				sommeYClick += j;
-				(*nbPixelsClick)++;
-			}
 		}
 	}
 
@@ -426,79 +356,54 @@ void Interface::binarisation(IplImage* image, int *nbPixels, int *nbPixelsClick)
 	{
 		// Show the result of the mask image
 		cvShowImage("Test Mask", mask);
-		cvShowImage("Test Mask Click", maskClick);
 	}
 	semop (semAffiche, &liberer, 1); 
 
 	// We release the memory of kernels
 	cvReleaseStructuringElement(&kernel);
 
-	// We release the memory of the masks
+	// We release the memory of the mask
 	cvReleaseImage(&mask);
-	cvReleaseImage(&maskClick);
 	// We release the memory of the hsv image
 	cvReleaseImage(&hsv);
-	 
-	// Test des pixels de click
-	if(*nbPixelsClick > NBPIXELSMIN)
-	{
-		xClick = (((float)sommeXClick / (float)(*nbPixelsClick))/ (float)(image->width));
-		yClick = (((float)sommeYClick / (float)(*nbPixelsClick))/ (float)(image->height));
-		clickPos = cvPoint((int)(sommeXClick / (*nbPixelsClick)), (int)(sommeYClick / (*nbPixelsClick)));
-	}
-	else
-	{
-		xClick = -1;
-		yClick = -1;
-		clickPos = cvPoint(-1, -1);
-	}
 
 	// If there is no pixel, we return a center outside the image, else we return the center of gravity
-	if(*nbPixels > NBPIXELSMIN)
+	if(*nbPixels > 10)
 	{
 		semop (sem, &reserver, 1); //réservation ressource critique
+		
 		*x = (((float)sommeX / (float)(*nbPixels))/ (float)(image->width));
 		*y = (((float)sommeY / (float)(*nbPixels))/ (float)(image->height));
 		
-		semop (semClick, &reserver, 1);
-		if ( ((*x-xClick)*(*x-xClick) + (*y-yClick)*(*y-yClick)) < SEUILAPPROCHE )
-		{
-			cerr << "### Pressed : " << ((*x-xClick)*(*x-xClick) + (*y-yClick)*(*y-yClick)) << endl;
-			*isPressed = true;
-		}
-		else
-		{
-			cerr << "### Not Pressed... : " << ((*x-xClick)*(*x-xClick) + (*y-yClick)*(*y-yClick)) << endl;
-			*isPressed = false;
-		}
-		semop (semClick, &liberer, 1); 
+		//*x = (((float)sommeX / (float)(*nbPixels)));
+		//*y = (((float)sommeY / (float)(*nbPixels)));
 		
+		//cerr << " X : " << this->x << " & Y : " << this->y << endl;
 		semop (sem, &liberer, 1); 
-		objectPos = cvPoint((int)(sommeX / (*nbPixels)), (int)(sommeY / (*nbPixels)));
+		
+		return cvPoint((int)(sommeX / (*nbPixels)), (int)(sommeY / (*nbPixels)));
 	}
 	else
 	{
-		semop (sem, &reserver, 1);
+		semop (sem, &reserver, 1); //réservation ressource critique
 		*x = -1;
 		*y = -1;
+		//cerr << " X : " << this->x << " & Y : " << this->y << endl;
 		semop (sem, &liberer, 1); 
 
-		objectPos = cvPoint(-1, -1);
+		return cvPoint(-1, -1);
 	}
-	
-	return;
 }
 
 /*
 * Add a circle on the video that follow your colored object
 */
-void Interface::addObjectsToVideo(IplImage* image, CvPoint objectNextPos, int nbPixels, CvPoint clickNextPos, int nbPixelsClick)
- {
+void Interface::addObjectToVideo(IplImage* image, CvPoint objectNextPos, int nbPixels) {
 
 	int objectNextStepX, objectNextStepY;
 
 	// Calculate circle next position (if there is enough pixels)
-	if (nbPixels > NBPIXELSMIN) {
+	if (nbPixels > 10) {
 
 		// Reset position if no pixel were found
 		if (objectPos.x == -1 || objectPos.y == -1) 
@@ -533,43 +438,6 @@ void Interface::addObjectsToVideo(IplImage* image, CvPoint objectNextPos, int nb
 		cvDrawCircle(image, objectPos, 15, CV_RGB(255, 0, 0), -1);
 	}
 	
-	int clickNextStepX, clickNextStepY;
-
-	// Calculate circle next position (if there is enough pixels)
-	if (nbPixelsClick > NBPIXELSMIN) {
-
-		// Reset position if no pixel were found
-		if (clickPos.x == -1 || clickPos.y == -1) 
-		{
-			clickPos.x = clickNextPos.x;
-			clickPos.y = clickNextPos.y;
-		}
-
-		// Move step by step the object position to the desired position
-		if (abs(clickPos.x - clickNextPos.x) > STEP_MIN) 
-		{
-			clickNextStepX = max(STEP_MIN, min(STEP_MAX, abs(clickPos.x - clickNextPos.x) / 2));
-			clickPos.x += (-1) * sign(clickPos.x - clickNextPos.x) * clickNextStepX;
-		}
-		if (abs(clickPos.y - clickNextPos.y) > STEP_MIN) 
-		{
-			clickNextStepY = max(STEP_MIN, min(STEP_MAX, abs(clickPos.y - clickNextPos.y) / 2));
-			clickPos.y += (-1) * sign(clickPos.y - clickNextPos.y) * clickNextStepY;
-		}
-
-	// -1 = object isn't within the camera range
-	}
-	else 
-	{
-		clickPos.x = -1;
-		clickPos.y = -1;
-	}
-
-	// Draw an object (circle) centered on the calculated center of gravity
-	if (nbPixelsClick > NBPIXELSMIN) 
-	{
-		cvDrawCircle(image, clickPos, 15, CV_RGB(0, 255, 0), -1);
-	}
 	
 	struct sembuf reserver = {0, -1, 0};
 	struct sembuf liberer = {0, 1, 0};
@@ -609,22 +477,10 @@ void getObjectColor(int event, int x, int y, int flags, void *param)
 		// Get the selected pixel
 		pixel = cvGet2D(hsv, y, x);
 
-		if ( ((Interface*)param)->getNext() == CLICK)
-		{
-			// Change the value of the tracked color with the color of the selected pixel
-			((Interface*)param)->setHClick((int)pixel.val[0]);
-			((Interface*)param)->setSClick((int)pixel.val[1]);
-			((Interface*)param)->setVClick((int)pixel.val[2]);
-			((Interface*)param)->setNext();
-		}
-		else
-		{
-			// Change the value of the tracked color with the color of the selected pixel
-			((Interface*)param)->setH((int)pixel.val[0]);
-			((Interface*)param)->setS((int)pixel.val[1]);
-			((Interface*)param)->setV((int)pixel.val[2]);
-			((Interface*)param)->setNext();
-		}
+		// Change the value of the tracked color with the color of the selected pixel
+		((Interface*)param)->setH((int)pixel.val[0]);
+		((Interface*)param)->setS((int)pixel.val[1]);
+		((Interface*)param)->setV((int)pixel.val[2]);
 
 		// Release the memory of the hsv image
 		cvReleaseImage(&hsv);

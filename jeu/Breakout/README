@@ -1,0 +1,26 @@
+############################################
+## A lire pour travailler sur l'interface ##
+############################################
+
+-- L'ancien fichier se nomme Interface1, c'est le même que précedemment.
+-- La nouvelle interface gère deux couleurs. 
+-- Si le code n'est pas excplicite, voir Yann.
+
+-- Le programme fonctionne comme avant.
+-- Au premier clic, on choisi la couleur à tracker.
+-- Au second clic, on choisi la couleur pour cliquer (qu'on devra rapprocher de la couleur de tracking)
+-- Et on reinitialise (donc si on reclick, on choisi la couleur à tracker etc...)
+
+TODO:
+
+-- La gestion des collisions se fait en comparant la distance des barycentres 
+		--> Un peu à l'arrache
+		--> peut-être essayer d'avoir la taille des objets(contours).
+		--> Dans tous les cas il faut améliorer le seuil (défini dans un define).
+		
+-- Les seuils de tolérance sont maintenant dans des defines, on peut les changer facilement.
+-- Idem pour le nombre de pixel minimal quand un objet est présent ou non.
+
+--> Il faut absolument mieux calibrer ces derniers valeurs.
+
+
