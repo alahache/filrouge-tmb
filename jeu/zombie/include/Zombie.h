@@ -8,19 +8,21 @@
 class Zombie : public AnimatedSprite {
     public:
     	// =================================== Constructors / Destructor
-        Zombie(sf::Image *pImg);
+        Zombie(sf::Image *pImg, sf::Image *pFond);
         ~Zombie();
         
         // =================================== Public methods
         
         // =================================== Redefined methods
-        void Update();
-		void HitBy(GameSprite* pSpr);
+        virtual void Update();
+		virtual void HitBy(GameSprite* pSpr);
         
         // =================================== Getters / Setters
     
     protected:
         // =================================== Attributes
+        sf::Image* fond;
+        int fcpt;
         
 };
 

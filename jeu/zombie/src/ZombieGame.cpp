@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "ZombieGame.h"
+#include "Zombie.h"
 
 using namespace std;
 
@@ -22,16 +23,16 @@ void ZombieGame::loadRessources() {
 	imgzombie = new sf::Image();
 	if (!imgzombie->LoadFromFile("images/zombie.png"))
 		std::cout << "ERREUR: chargement de l'image";
-		
-	sprzombie = new AnimatedSprite(imgzombie, 5, 5, 5, 50, 88);
-	AddSprite(sprzombie);
 	
 	imgfond = new sf::Image();
-	if (!imgfond->LoadFromFile("images/fond.png"))
+	if (!imgfond->LoadFromFile("images/terrain.png"))
 		std::cout << "ERREUR: chargement de l'image";
 	
 	sprfond = new sf::Sprite(*imgfond);
 	sprfond->Move(0, 0);
+	
+	sprzombie = new Zombie(imgzombie, imgfond);
+	AddSprite(sprzombie);
 }
 
 void ZombieGame::initGame() {
