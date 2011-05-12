@@ -1,10 +1,10 @@
 CC = g++
 EXEC_NAME = BreakOut
 INCLUDES = 
-LIBS = -lsfml-graphics -lsfml-window -lsfml-system
+LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lm
 OBJ_FILES = BreakOut.o Main.o Interface.o Balle.o GameSprite.o Game.o Barre.o Brique.o
-OPT_CMP=-c
-OPT_EDL=-o
+OPT_CMP=-c -Wall -Werror -pedantic
+OPT_EDL=-Wall -Werror -pedantic -o
 
 all: $(EXEC_NAME)
 

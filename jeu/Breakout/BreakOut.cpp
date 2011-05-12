@@ -9,7 +9,7 @@
 #include "Barre.h"
 #include "Brique.h"
 
-#define MAX_BRIQUES 10
+#define MAX_BRIQUES 30
 
 BreakOut::BreakOut()
 	: Game(SCREEN_W, SCREEN_H, "BreakOut") {
@@ -59,18 +59,18 @@ void BreakOut::loadRessources() {
 		std::cout << "ERREUR: chargement de l'image";
 	brique.resize(MAX_BRIQUES);
 	for(int i=0; i<MAX_BRIQUES; i++) {
-	    Brique* uneBrique = new Brique(imgBrique, 100 + i*(imgBrique->GetWidth()+20), 200, this, 2);
+	    Brique* uneBrique = new Brique(imgBrique, 60 + i%10*(imgBrique->GetWidth()+20), 160 + i/10*(imgBrique->GetHeight()+20), this, 1);
     	AddSprite(uneBrique);
     	brique[i] = uneBrique;
 	}
 
 	// Font
-	/*font = new sf::Font();
+	font = new sf::Font();
 	if (!font->LoadFromFile("arial.ttf"))
 		//return EXIT_FAILURE;
 		std::cout << "ERREUR: chargement de la font";
-	text = new sf::String("Score :", sf::Font::GetDefaultFont(), 30);
-	text->SetColor(sf::Color(0, 0, 0));*/
+	text = new sf::String("Score :", *font, 20);
+	text->SetColor(sf::Color(0, 0, 0));
 }
 
 
@@ -131,13 +131,15 @@ void BreakOut::Run() {
 		if(isGameOn) {
 		
 			// Update all sprites :
-			for(int i=0; i<sprites.size(); i++) {
+			for(unsigned int i=0; i<sprites.size(); i++) {
 				sprites[i]->Update();
 			}
+			
+			score++;
 		}
 		
 		// change text :
-		/*std::string txt("Score : ");
+		std::string txt("Score : ");
 		{
 			std::ostringstream os;
 			os << score;
@@ -146,7 +148,9 @@ void BreakOut::Run() {
 			}
 			txt += os.str();
 		}
-		text->SetText(txt);*/
+		text->SetText(txt);
+		//String text(txt, font, 20);
+		text->SetColor(sf::Color(0, 0, 0));
 
 		// Clear screen
 		window->Clear(sf::Color(255, 255, 255));
@@ -155,13 +159,17 @@ void BreakOut::Run() {
 		window->Draw(*sprBackground);
 		
 		// Draw all the objects on the window
-		for(int i=0; i<sprites.size(); i++) {
+		for(unsigned int i=0; i<sprites.size(); i++) {
 		    if(dynamic_cast<Brique*>(sprites[i]) == NULL || dynamic_cast<Brique*>(sprites[i])->IsLiving()) //N'affiche pas les briques touchees
 			    window->Draw(*(sprites[i]));
 		}
 		
+		if(!isGameOn) {
+		    //window->Draw(*sprBackground);
+		}
+		
 		// Draw the string
-		//window->Draw(*text);
+		window->Draw(*text);
 
 		// Update the window
 		window->Display();
