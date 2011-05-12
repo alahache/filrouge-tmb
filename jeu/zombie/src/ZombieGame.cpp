@@ -9,7 +9,7 @@ ZombieGame::ZombieGame()
 	: Game(SCREEN_W, SCREEN_H, "ZombieGame") {
 	
 	loadRessources();
-	
+	offset=0;
 }
 
 ZombieGame::~ZombieGame() {
@@ -17,16 +17,23 @@ ZombieGame::~ZombieGame() {
 }
 
 void ZombieGame::loadRessources() {
-	sprzombie = new sf::Image();
-	if (!sprzombie->LoadFromFile("images/zombie.png"))
+	imgzombie = new sf::Image();
+	if (!imgzombie->LoadFromFile("images/zombie.png"))
+		std::cout << "ERREUR: chargement de l'image";
+		
+	sprzombie = new AnimatedSprite(imgzombie, 5, 5, 5, 50, 88);
+	AddSprite(sprzombie);
+	
+	imgfond = new sf::Image();
+	if (!imgfond->LoadFromFile("images/fond.png"))
 		std::cout << "ERREUR: chargement de l'image";
 	
-	zombie = new AnimatedSprite(sprzombie, 5, 5, 5, 50, 88);
-	AddSprite(zombie);
+	sprfond = new sf::Sprite(*imgfond);
+	sprfond->Move(0, 0);
 }
 
 void ZombieGame::initGame() {
-
+	window->SetView(sf::View(sf::FloatRect(offset, 0, offset+800, offset+600)));
 }
 
 void ZombieGame::Run() {
@@ -53,16 +60,20 @@ void ZombieGame::Run() {
 		
 		if(isGameOn) {
 		
-			zombie->Animate();
+			sprzombie->Animate();
 		
 			// Update all sprites :
 			for(int i=0; i<sprites.size(); i++) {
 				sprites[i]->Update();
 			}
 		}
+		
+		window->SetView(sf::View(sf::FloatRect(offset, 0, offset+800, 600)));
 
 		// Clear screen
 		window->Clear(sf::Color(255, 255, 255));
+		
+		window->Draw(*sprfond);
 		
 		// Draw all the objects on the window
 		for(int i=0; i<sprites.size(); i++) {
@@ -71,6 +82,8 @@ void ZombieGame::Run() {
 		
 		// Update the window
 		window->Display();
+		
+		offset++;
 	}
 }
 
