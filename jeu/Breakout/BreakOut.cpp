@@ -9,7 +9,8 @@
 #include "Barre.h"
 #include "Brique.h"
 
-#define MAX_BRIQUES 30
+#define MAX_BRIQUES 50
+#define BRIQUES_PER_LINE 12
 
 BreakOut::BreakOut()
 	: Game(SCREEN_W, SCREEN_H, "BreakOut") {
@@ -59,7 +60,8 @@ void BreakOut::loadRessources() {
 		std::cout << "ERREUR: chargement de l'image";
 	brique.resize(MAX_BRIQUES);
 	for(int i=0; i<MAX_BRIQUES; i++) {
-	    Brique* uneBrique = new Brique(imgBrique, 60 + i%10*(imgBrique->GetWidth()+20), 160 + i/10*(imgBrique->GetHeight()+20), this, 1);
+	    Brique* uneBrique = new Brique(imgBrique, 60 + i%BRIQUES_PER_LINE*(imgBrique->GetWidth()+5), 
+	                                    140 + i/BRIQUES_PER_LINE*(imgBrique->GetHeight()+5), this, 1);
     	AddSprite(uneBrique);
     	brique[i] = uneBrique;
 	}
