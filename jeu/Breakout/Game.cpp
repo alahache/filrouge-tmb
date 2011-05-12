@@ -12,7 +12,7 @@ Game::Game(unsigned int w, unsigned int h, std::string title) {
 
 Game::~Game() {
 	delete window;
-	for(int i=0; i<sprites.size(); i++)
+	for(unsigned int i=0; i<sprites.size(); i++)
 		delete sprites[i];
 }
 

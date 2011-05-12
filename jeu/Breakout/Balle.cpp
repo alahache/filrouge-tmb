@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 #include <cassert>
+#include <cstdlib>
 
 #include "Balle.h"
 #include "BreakOut.h"
@@ -35,45 +36,55 @@ void Balle::Update() {
         game->Lost();
 		
 	// Collisions with any Sprite :
-	for(int i=0; i<game->NbSprites(); i++) {
+	for(unsigned int i=0; i<game->NbSprites(); i++) {
 	
-		GameSprite* currentSpr = game->GetSprite(i);
-		if(currentSpr == this) continue;
+		GameSprite* curSpr = game->GetSprite(i);
+		if(curSpr == this) continue;
 		
 		// Collision test :
-		if(!Hits(currentSpr)) continue;
+		if(!Hits(curSpr)) continue;
 		
 		// Actions depending on Sprite's type :
-		if(currentSpr->GetType()=="barre") {
+		if(curSpr->GetType()=="barre") {
 		
 			// direction control : (between 30 and 160 degrees)
-			angle = (120.0/currentSpr->Width()) * ((currentSpr->X() + currentSpr->Width()) - (X() + (Width() / 2))) + 30.0;
+			angle = (120.0/curSpr->Width()) * ((curSpr->X() + curSpr->Width()) - (X() + (Width() / 2))) + 30.0;
 			
 			calculateDirection();
 		}
 		
-		if(currentSpr->GetType() == "brique") {
-		    if(!dynamic_cast<Brique*>(currentSpr)->IsLiving()) continue;
+		if(curSpr->GetType() == "brique") {
+		    if(!dynamic_cast<Brique*>(curSpr)->IsLiving()) continue;
 		    
 		    double dx = cos(angle*PI/180);
 		    double dy = sin(angle*PI/180);
-		    double olddx = dx;
-		    double olddy = dy;
-		    float tmpx = currentSpr->X() + currentSpr->Width()/2;
-		    float tmpy = currentSpr->Y() + currentSpr->Height()/2;
-		    if(tmpx < X() || tmpx > X() + Width()/2) {
-		        dx = -dx;
-		        std::cout << "Change dx" << std::endl;
-		    }
-		    if(tmpy < Y() || tmpy > Y() + Height()/2) {
-		        dy = -dy;
-		        std::cout << "Change dy" << std::endl;
-		    }
+		    //double olddx = dx;
+		    //double olddy = dy;
+            if (X() + dx < curSpr->X()+ curSpr->Width() &&
+                    X() + Width() + dx > curSpr->X() &&
+                    Y() + dy < curSpr->Y() + curSpr->Height() &&
+                    Y() + Height() + dy > curSpr->Y()) { //Si collision
+                
+                if (abs(abs(X() - (curSpr->X() + curSpr->Width())) -
+                             abs(X() + Width() -
+                                      curSpr->X())) >
+                    abs(abs(Y() - curSpr->Y() - curSpr->Height()) -
+                             abs(Y() + Height() -
+                                      curSpr->Y()))) {
+                    dx = -dx;
+                    std::cout << "change X" << std::endl;
+                } else {
+                    dy = -dy;
+                    std::cout << "change Y" << std::endl;
+                }
+                
+            }
+		    
 		    std::cout << atan(dy/dx) << std::endl;
-		    SetAngle(tan(dy/dx)*180/PI);
+		    SetAngle(atan(dy/dx)*180/PI + (dx<0 ? 180 : 0));
 		    //system("sleep 1");
 		    //assert(dx != olddx && dy != olddy);
-		    dynamic_cast<Brique*>(currentSpr)->Hit();
+		    dynamic_cast<Brique*>(curSpr)->Hit();
 		}
 	}
 	
@@ -92,7 +103,7 @@ void Balle::Init() {
     
     // Direction :
     angle = -45;
-    speed = 15;
+    speed = 10;
     calculateDirection();
 }
 
