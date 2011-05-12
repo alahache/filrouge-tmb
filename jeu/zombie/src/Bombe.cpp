@@ -1,4 +1,4 @@
-
+#include "ZombieGame.h"
 #include "Bombe.h"
 
 Bombe::Bombe(sf::Image *img, ZombieGame* pGame)
@@ -28,7 +28,7 @@ sf::Vector2f Bombe::GetPosBombe()
 
 float Bombe::GetSizeBombe()
 {
-	return (Bombe.GetSize().y);
+	return (Width());
 }
 
 
@@ -37,9 +37,8 @@ void Bombe::Init() {
 	type = "bombe";
 
 	// Position :
-	// TODO :
-	SetX();
-	SetY();
+	direction.x = 0;
+	direction.y = 0;
     
     // Direction :
     speed = 10;
@@ -61,19 +60,19 @@ void Bombe::limitMovement(int x, int y, float taille) {
 	yEye = y;
 	sizeCircleMove = taille;
 	angle = 0;
-	criticDist = Bombe.GetSizeBombe()/2-sizeCircleMove/2-5;
+	criticDist = GetSizeBombe()/2-sizeCircleMove/2-5;
 }
 
-void updateLimit() {
-	angle = atan((GetY()-yEye) / (GetX()-xEye));
-	if((GetX()-xEye) * (GetX()-superxEye)
-			+ (GetY()-yEye) * (GetY()-yEye)
+void Bombe::updateLimit() {
+	angle = atan((game->GetInterface().GetY()-yEye) / (game->GetInterface().GetX()-xEye));
+	if((game->GetInterface().GetX()-xEye) * (game->GetInterface().GetX()-xEye)
+			+ (game->GetInterface().GetY()-yEye) * (game->GetInterface().GetY()-yEye)
 			>= criticDist * criticDist) {
 		direction.x = xEye + criticDist*cos(angle);
 		direction.y = yEye + criticDist*sin(angle);
 	} else {
-		direction.x = GetX();
-		direction.y = GetY();
+		direction.x = game->GetInterface().GetX();
+		direction.y = game->GetInterface().GetY();
 	}
 }
 

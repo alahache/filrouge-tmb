@@ -3,8 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 
+
 #include "GameSprite.h"
-#include "game.h"
+#include "Game.h"
 
 class ZombieGame;
 
@@ -37,6 +38,7 @@ class Bombe : public GameSprite {
         
         // Define the limits :
         float sizeCircleMove;
+        float criticDist;
         int xEye;
         int yEye;
         
@@ -44,7 +46,8 @@ class Bombe : public GameSprite {
         bool bind;
         
         // =================================== Protected methods
-        void limitMovement();
+        void limitMovement(int x, int y, float taille);
+        void updateLimit();
         void calculateDirection();
 };
 

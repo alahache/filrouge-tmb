@@ -1,9 +1,11 @@
 
+#include "ZombieGame.h"
 #include "Catapulte.h"
 
 //================================================================ PUBLIC
 
-Catapulte::Catapulte()
+Catapulte::Catapulte(ZombieGame* pGame)
+		: game(pGame)
 {
 	// Positions :
 	
@@ -16,20 +18,18 @@ Catapulte::Catapulte()
 	yAttRight = 0;
 
 	// Define the lines :
-	line1 = new sf::Shape::Line(xAttLeft, yAttLeft, xBombe, yBombe, thickness, color);
-	line2 = new sf::Shape::Line(xAttRight, xAttRight, xBombe, yBombe, thickness, color);
+	line1 = sf::Shape::Line(xAttLeft, yAttLeft, posBombe.x, posBombe.y, 20, sf::Color::Black);
+	line2 = sf::Shape::Line(xAttRight, xAttRight, posBombe.x, posBombe.y, 20, sf::Color::Black);
 }
 
 Catapulte::~Catapulte()
 {
-	// delete :
-	delete line1;
-	delete line2;
+	// delete : nothing
 }
 
 void Catapulte::Update()
 {
-	if(isMousePressed)
+	if(game->GetInterface().isMousePressed())
 	{
 		posBombe = bombe->GetPosBombe();
 		SetPosBombe(posBombe.x, posBombe.y);
@@ -45,14 +45,14 @@ void Catapulte::Update()
 
 void Catapulte::SetPosBombe(float anyXBombe, float anyYBombe)
 {
-	xBombe = anyXBombe;
-	yBombe = anyYBombe;
+	posBombe.x = anyXBombe;
+	posBombe.y = anyYBombe;
 	drawLines();
 }
 
 
 void Catapulte::drawLines()
 {
-	ZombieGame->GetWindow()->Draw(line1);
-	ZombieGame->GetWindow()->Draw(line2);
+	game->GetWindow()->Draw(line1);
+	game->GetWindow()->Draw(line2);
 }
