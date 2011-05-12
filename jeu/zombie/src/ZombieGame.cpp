@@ -5,11 +5,13 @@
 
 #include "ZombieGame.h"
 
+using namespace std;
+
 ZombieGame::ZombieGame()
 	: Game(SCREEN_W, SCREEN_H, "ZombieGame") {
 	
 	loadRessources();
-	offset=0;
+	viewoffset=0;
 }
 
 ZombieGame::~ZombieGame() {
@@ -33,7 +35,7 @@ void ZombieGame::loadRessources() {
 }
 
 void ZombieGame::initGame() {
-	window->SetView(sf::View(sf::FloatRect(offset, 0, offset+800, offset+600)));
+	window->SetView(sf::View(sf::FloatRect(viewoffset, 0, viewoffset+SCREEN_W, SCREEN_H)));
 }
 
 void ZombieGame::Run() {
@@ -68,11 +70,17 @@ void ZombieGame::Run() {
 			}
 		}
 		
-		window->SetView(sf::View(sf::FloatRect(offset, 0, offset+800, 600)));
+		// Set view
+		if(interface->GetX() >= 0.7 && viewoffset+SCREEN_W < sprfond->GetSize().x)
+			viewoffset+=10;
+		else if(interface->GetX() <= 0.3 && viewoffset > 0)
+			viewoffset-=10;
+		window->SetView(sf::View(sf::FloatRect(viewoffset, 0, viewoffset+SCREEN_W, SCREEN_H)));
 
 		// Clear screen
 		window->Clear(sf::Color(255, 255, 255));
 		
+		// Draw background
 		window->Draw(*sprfond);
 		
 		// Draw all the objects on the window
@@ -82,8 +90,6 @@ void ZombieGame::Run() {
 		
 		// Update the window
 		window->Display();
-		
-		offset++;
 	}
 }
 

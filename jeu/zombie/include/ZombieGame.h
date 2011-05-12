@@ -36,7 +36,7 @@ class ZombieGame : public Game {
         AnimatedSprite* sprzombie;
         sf::Image* imgfond;
         sf::Sprite* sprfond;
-        int offset;
+        int viewoffset;
 };
 
 #endif
