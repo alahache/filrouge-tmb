@@ -80,7 +80,7 @@ void Bombe::Update() {
 					SetX(pos.x - Width()/2);
 					SetY(pos.y - Height()/2);
 				}
-				catapulte -> DrawLines(X(), Y());
+				catapulte -> DrawLines(X() + Width()/2, Y() + Height()/2);
 			}
 		}
 		else if(drag == true)

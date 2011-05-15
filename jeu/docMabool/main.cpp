@@ -14,10 +14,10 @@ using namespace std;
 
 int main() {
     SMB shootMyBall;
-    //Interface* inter = new Interface(/*shootMyBall.GetRenderWindow()*/); //Emulation de la webcam
-    //stball.SetInterface(inter);
+    Interface* inter = new Interface(shootMyBall.GetRenderWindow()); //Emulation de la webcam
+    stball.SetInterface(inter);
     shootMyBall.Run();
-    //delete inter;
+    delete inter;
 
     return 0;
 }

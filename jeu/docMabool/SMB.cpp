@@ -41,6 +41,17 @@ sf::RenderWindow* SMB::GetRenderWindow() { //Emulation de la webcam
     return app;
 }
 
+void SMB::SetInterface(Interface* myInterface)
+{
+	interface = myInterface;
+}
+
+Interface* SMB::GetInterface()
+{
+	return (interface);
+}
+
+
 
 void SMB::loadRessources()
 {
@@ -154,6 +165,7 @@ void SMB::Run()
     if(!font.LoadFromFile("arial.ttf"))
     {
         // Traitement de l'erreur
+        cout << "Erreur chargement de la police !" << endl;
     }
 
     int score = 0;
@@ -195,7 +207,7 @@ void SMB::Run()
                 app->Close();
 
             // Si on clicke sur un sprite :
-            if(Event::MouseButtonPressed)
+            if(Event::isMousePressed)
             {
                 if(hitTest(spriteBall,event))
                 {
