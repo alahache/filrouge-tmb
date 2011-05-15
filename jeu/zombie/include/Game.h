@@ -19,6 +19,7 @@ class Game {
         
         // =================================== Sprite List methods
         void AddSprite(GameSprite* pSpr);
+        void RemoveSprite(GameSprite* pSpr);
         GameSprite* GetSprite(unsigned int i);
         unsigned int NbSprites();
         

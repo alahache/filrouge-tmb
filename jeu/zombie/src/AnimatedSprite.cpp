@@ -13,6 +13,10 @@ AnimatedSprite::AnimatedSprite(sf::Image *pImg, int _fpi, int _ncols, int _nbimg
 	offsetY = 0;
 	index = 0;
 	fcount = 0;
+	play = true;
+	loop = true;
+	begin = 0;
+	end = nbimgs-1;
 	SetSubRect(sf::IntRect(offsetX, offsetY, offsetX+imgwidth, offsetY+imgheight));
 }
 
@@ -21,9 +25,21 @@ AnimatedSprite::~AnimatedSprite() {
 }
 
 void AnimatedSprite::Animate() {
+	if(!play) return;
 	if(fcount == fpi)
 	{
-		if(index>=nbimgs) index = 0;
+		if(index>=end)
+		{
+			if(loop)
+				index = begin;
+			else
+			{
+				Stop();
+				End();
+				return;
+			}
+		}
+		
 		offsetX = imgwidth*(index%ncols);
 		offsetY = imgheight*(index/ncols);
 		index++;
@@ -33,10 +49,29 @@ void AnimatedSprite::Animate() {
 	fcount++;
 }
 
+void AnimatedSprite::Play() {
+	play = true;
+}
+
+void AnimatedSprite::Stop() {
+	play = false;
+}
+
+void AnimatedSprite::Play(int _begin, int _end, bool _loop) {
+	begin = _begin;
+	end = _end;
+	loop = _loop;
+	play = true;
+}
+
 void AnimatedSprite::Update() {
 	// To be redefined if necessary
 }
 
 void AnimatedSprite::HitBy(GameSprite* pSpr) {
+	// To be redefined if necessary
+}
+
+void AnimatedSprite::End() {
 	// To be redefined if necessary
 }

@@ -14,10 +14,14 @@ class AnimatedSprite : public GameSprite {
 
 		// =================================== Public methods
 		void Animate();
+		void Play();
+		void Stop();
+		void Play(int _begin, int _end, bool _loop=true);
 
 		// =================================== Abstract methods
 		virtual void Update();
 		virtual void HitBy(GameSprite* pSpr);
+		virtual void End();
 
 		// =================================== Getters
 		
@@ -36,6 +40,11 @@ class AnimatedSprite : public GameSprite {
 		float imgheight;
 		float offsetX;
 		float offsetY;
+		
+		bool play;
+		bool loop;
+		int begin;
+		int end;
 };
 
 #endif

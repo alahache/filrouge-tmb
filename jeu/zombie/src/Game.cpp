@@ -20,6 +20,12 @@ void Game::AddSprite(GameSprite* pSpr) {
 	sprites.push_back(pSpr);
 }
 
+void Game::RemoveSprite(GameSprite* pSpr) {
+	std::vector<GameSprite*>::iterator it = find(sprites.begin(), sprites.end(), pSpr);
+	sprites.erase(it);
+	delete pSpr;
+}
+
 GameSprite* Game::GetSprite(unsigned int i) {
 	return sprites[i];
 }
