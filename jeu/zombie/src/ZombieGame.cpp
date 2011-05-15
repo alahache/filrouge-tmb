@@ -21,7 +21,8 @@ ZombieGame::~ZombieGame() {
 	delete imgzombie;
 	delete imgterrain;
 	delete sprterrain;
-	delete sprzombie;
+	delete catapulte;
+	delete imgbombe;
 }
 
 void ZombieGame::loadRessources() {
