@@ -5,8 +5,8 @@
 
 using namespace std;
 
-Bombe::Bombe(sf::Image *img, ZombieGame* pGame, Catapulte* _catapulte, sf::Image* _imgterrain)
-	: GameSprite(img), game(pGame), catapulte(_catapulte), imgterrain(_imgterrain)
+Bombe::Bombe(sf::Image *img, ZombieGame* pGame, Catapulte* _catapulte, sf::Image* _imgterrain, Explosion* _sprexplosion)
+	: GameSprite(img), game(pGame), catapulte(_catapulte), imgterrain(_imgterrain), sprexplosion(_sprexplosion)
 {
     // Type :
 	type = "bombe";
@@ -15,14 +15,12 @@ Bombe::Bombe(sf::Image *img, ZombieGame* pGame, Catapulte* _catapulte, sf::Image
 	posOrigin.x = POSX;
 	posOrigin.y = POSY;
 	SetPosition(posOrigin);
-    
-    // Direction :
-    speed = 10;
-    //angle = -45;
+	
+	lancee = false;
+	drag = false;
 }
 
 Bombe::~Bombe() {
-	// Nothing to delete either
 }
 
 void Bombe::Update() {
@@ -42,11 +40,10 @@ void Bombe::Update() {
 		}
 		else if(X() < 1440 && imgterrain->GetPixel(X()+Width()/2, Y()+Height()-3).a > 40)
 		{
-			cout << X()+Width()/2 << "," << Y()+Height()-3 << endl;
+			explosion();
 			lancee = false;
 			game->GetCamera().Stop();
 			SetPosition(posOrigin);
-			// TODO Boooom
 		}
 	}
 	else
@@ -80,7 +77,7 @@ void Bombe::Update() {
 					SetX(pos.x - Width()/2);
 					SetY(pos.y - Height()/2);
 				}
-				catapulte -> DrawLines(X() + Width()/2, Y() + Height()/2);
+				catapulte->DrawLines(X() + Width()/2, Y() + Height()/2);
 			}
 		}
 		else if(drag == true)
@@ -96,18 +93,10 @@ void Bombe::Update() {
 	
 }
 
-void Bombe::SetSpeed(float unSpeed) {
-	speed = unSpeed;
-}
-
-void Bombe::SetAngle(float unAngle) {
-	angle = unAngle;
-}
-
-void Bombe::calculateDirection() {
-	// Simulate the translation :
-	direction.x += 1;
-	// Simulate the fall :
-	direction.y = - speed + 0.5;
+void Bombe::explosion()
+{
+	sprexplosion->Place(X() + Width()/2, Y() + Width()/2);
+	game->AddSprite(sprexplosion);
+	sprexplosion->Play(0, 24, false);
 }
 

@@ -62,6 +62,7 @@ void AnimatedSprite::Play(int _begin, int _end, bool _loop) {
 	end = _end;
 	loop = _loop;
 	play = true;
+	index = begin;
 }
 
 void AnimatedSprite::Update() {

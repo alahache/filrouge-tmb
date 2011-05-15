@@ -9,6 +9,9 @@
 #include "Camera.h"
 #include "AnimatedSprite.h"
 #include "Catapulte.h"
+#include "Zombie.h"
+#include "Explosion.h"
+#include "Bombe.h"
 
 class ZombieGame : public Game {
     public:
@@ -43,13 +46,15 @@ class ZombieGame : public Game {
 		
 		// Sprites :
 		sf::Image* imgzombie;
-		AnimatedSprite* sprzombie;
+		Zombie* sprzombie;
 		sf::Image* imgfond;
 		sf::Sprite* sprfond;
 		sf::Image* imgterrain;
 		sf::Sprite* sprterrain;
 		sf::Image* imgbombe;
-		GameSprite* sprbombe;
+		Bombe* sprbombe;
+		sf::Image* imgexplosion;
+		Explosion* sprexplosion;
 		Catapulte* catapulte;
 };
 

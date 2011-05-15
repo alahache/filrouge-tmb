@@ -9,10 +9,11 @@
 class Explosion : public AnimatedSprite {
     public:
     	// =================================== Constructors / Destructor
-        Explosion(sf::Image *pImg, Game* _game, float x, float y);
+        Explosion(sf::Image *pImg, Game* _game);
         ~Explosion();
         
         // =================================== Public methods
+        void Place(float x, float y);
         
         // =================================== Redefined methods
         virtual void Update();

@@ -12,8 +12,8 @@ Game::Game(unsigned int w, unsigned int h, std::string title, unsigned int _fps)
 
 Game::~Game() {
 	delete window;
-	for(int i=0; i<sprites.size(); i++)
-		delete sprites[i];
+	/*for(int i=0; i<sprites.size(); i++)
+		delete sprites[i];*/
 }
 
 void Game::AddSprite(GameSprite* pSpr) {
@@ -23,7 +23,6 @@ void Game::AddSprite(GameSprite* pSpr) {
 void Game::RemoveSprite(GameSprite* pSpr) {
 	std::vector<GameSprite*>::iterator it = find(sprites.begin(), sprites.end(), pSpr);
 	sprites.erase(it);
-	delete pSpr;
 }
 
 GameSprite* Game::GetSprite(unsigned int i) {

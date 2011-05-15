@@ -6,16 +6,19 @@ using namespace std;
 
 //================================================================ PUBLIC
 
-Explosion::Explosion(sf::Image *pImg, Game* _game, float x, float y)
+Explosion::Explosion(sf::Image *pImg, Game* _game)
 	: AnimatedSprite(pImg, 1, 5, 25, 85, 85), game(_game)
 {
-    SetX(x - Width()/2);
-    SetY(y - Height()/2);
-    Play(0, 24, false);
 }
 
 Explosion::~Explosion() {
 	// Nothing to delete
+}
+
+void Explosion::Place(float x, float y)
+{
+	SetX(x - Width()/2);
+    SetY(y - Height()/2);
 }
 
 void Explosion::Update() {

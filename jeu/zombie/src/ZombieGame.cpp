@@ -4,8 +4,6 @@
 #include <algorithm>
 
 #include "ZombieGame.h"
-#include "Zombie.h"
-#include "Bombe.h"
 
 using namespace std;
 
@@ -18,15 +16,24 @@ ZombieGame::ZombieGame()
 ZombieGame::~ZombieGame() {
 	delete camera;
 	delete imgzombie;
+	delete sprzombie;
 	delete imgterrain;
 	delete sprterrain;
 	delete catapulte;
 	delete imgbombe;
+	delete sprbombe;
+	delete sprexplosion;
+	delete imgexplosion;
 }
 
 void ZombieGame::loadRessources() {
 	catapulte = new Catapulte(this, 1550, 260, 1633, 260);
-		
+	
+	imgexplosion = new sf::Image();
+	if (!imgexplosion->LoadFromFile("images/explosion.png"))
+		std::cout << "ERREUR: chargement de l'image";
+	sprexplosion = new Explosion(imgexplosion, this);
+	
 	imgfond = new sf::Image();
 	if (!imgfond->LoadFromFile("images/fond.png"))
 		std::cout << "ERREUR: chargement de l'image";
@@ -42,7 +49,7 @@ void ZombieGame::loadRessources() {
 	imgbombe = new sf::Image();
 	if (!imgbombe->LoadFromFile("images/bombe.png"))
 		std::cout << "ERREUR: chargement de l'image";
-	sprbombe = new Bombe(imgbombe, this, catapulte, imgterrain);
+	sprbombe = new Bombe(imgbombe, this, catapulte, imgterrain, sprexplosion);
 	AddSprite(sprbombe);
 	
 	imgzombie = new sf::Image();
@@ -104,11 +111,10 @@ void ZombieGame::Run() {
 		window->Draw(*sprterrain);
 		
 		if(isGameOn) {
-		
-			sprzombie->Animate();
-		
 			// Update all sprites :
 			for(int i=0; i<sprites.size(); i++) {
+				AnimatedSprite* a = dynamic_cast<AnimatedSprite*>(sprites[i]);
+				if(a != NULL) a->Animate();
 				sprites[i]->Update();
 			}
 		}

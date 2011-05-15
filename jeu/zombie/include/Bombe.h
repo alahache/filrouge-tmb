@@ -7,6 +7,7 @@
 #include "GameSprite.h"
 #include "Game.h"
 #include "Catapulte.h"
+#include "Explosion.h"
 
 class ZombieGame;
 
@@ -20,15 +21,13 @@ class Bombe : public GameSprite {
     	    	
     	
     	// =================================== Constructors / Destructor
-        Bombe(sf::Image* img, ZombieGame* pGame, Catapulte* _catapulte, sf::Image* _imgterrain);
+        Bombe(sf::Image* img, ZombieGame* pGame, Catapulte* _catapulte, sf::Image* _imgterrain, Explosion* _sprexplosion);
         ~Bombe();
         
         // =================================== Redefined methods from GameSprite
        	void Update();
        	
        	// =================================== Public methods
-       	void SetSpeed(float anySpeed);
-       	void SetAngle(float anyAngle);
     
     protected:
     
@@ -37,6 +36,7 @@ class Bombe : public GameSprite {
     	Catapulte* catapulte;
     	sf::Image* imgterrain;
     	sf::Vector2f posOrigin;
+    	Explosion* sprexplosion;
     	
         sf::Vector2f direction;
         float speed;
@@ -49,6 +49,7 @@ class Bombe : public GameSprite {
         
         // =================================== Protected methods
         void calculateDirection();
+        void explosion();
 };
 
 #endif
