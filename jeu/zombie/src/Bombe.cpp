@@ -36,6 +36,18 @@ void Bombe::Update() {
 			game->GetCamera().Stop();
 			SetPosition(posOrigin);
 		}
+		else if(Y() < 0)
+		{
+			// TODO Afficher position en haut
+		}
+		else if(X() < 1440 && imgterrain->GetPixel(X()+Width()/2, Y()+Height()-3).a > 40)
+		{
+			cout << X()+Width()/2 << "," << Y()+Height()-3 << endl;
+			lancee = false;
+			game->GetCamera().Stop();
+			SetPosition(posOrigin);
+			// TODO Boooom
+		}
 	}
 	else
 	{
