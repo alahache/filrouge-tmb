@@ -66,11 +66,21 @@ void Bombe::Update() {
 		
 			if(drag == true)
 			{
-				// TODO : limites cercle
-			
-				SetX(pos.x - Width()/2);
-				SetY(pos.y - Height()/2);
-				catapulte -> DrawLines(pos.x, pos.y);
+				// Limites cercle
+				angle = atan((pos.y-POSY) / (pos.x-POSX));
+				if((pos.x-POSX) * (pos.x-POSX) + (pos.y-POSY) * (pos.y-POSY) >= LIMIT * LIMIT) {
+					if( (pos.x-POSX) > 0 ) {
+						SetX(POSX - Width()/2 + LIMIT*cos(angle));
+						SetY(POSY - Height()/2 + LIMIT*sin(angle));
+					} else {
+						SetX(POSX - Width()/2 - LIMIT*cos(angle));
+						SetY(POSY - Height()/2 - LIMIT*sin(angle));
+					}
+				} else {
+					SetX(pos.x - Width()/2);
+					SetY(pos.y - Height()/2);
+				}
+				catapulte -> DrawLines(X(), Y());
 			}
 		}
 		else if(drag == true)
@@ -92,28 +102,6 @@ void Bombe::SetSpeed(float unSpeed) {
 
 void Bombe::SetAngle(float unAngle) {
 	angle = unAngle;
-}
-
-
-void Bombe::limitMovement(int x, int y, float taille) {
-	xEye = x;
-	yEye = y;
-	sizeCircleMove = taille;
-	angle = 0;
-	criticDist = Width()/2-sizeCircleMove/2-5;
-}
-
-void Bombe::updateLimit() {
-	angle = atan((game->GetInterface().GetY()-yEye) / (game->GetInterface().GetX()-xEye));
-	if((game->GetInterface().GetX()-xEye) * (game->GetInterface().GetX()-xEye)
-			+ (game->GetInterface().GetY()-yEye) * (game->GetInterface().GetY()-yEye)
-			>= criticDist * criticDist) {
-		direction.x = xEye + criticDist*cos(angle);
-		direction.y = yEye + criticDist*sin(angle);
-	} else {
-		direction.x = game->GetInterface().GetX();
-		direction.y = game->GetInterface().GetY();
-	}
 }
 
 void Bombe::calculateDirection() {
