@@ -4,7 +4,6 @@
 #include <algorithm>
 
 #include "ZombieGame.h"
-#include "Bombe.h"
 #include "Zombie.h"
 #include "Bombe.h"
 
@@ -113,7 +112,7 @@ void ZombieGame::Run() {
 				sprites[i]->Update();
 			}
 		}
-				
+		
 		// Draw all the objects on the window
 		for(int i=0; i<sprites.size(); i++) {
 			window->Draw(*(sprites[i]));
