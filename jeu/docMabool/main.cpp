@@ -15,7 +15,7 @@ using namespace std;
 int main() {
     SMB shootMyBall;
     Interface* inter = new Interface(shootMyBall.GetRenderWindow()); //Emulation de la webcam
-    stball.SetInterface(inter);
+    shootMyBall.SetInterface(inter);
     shootMyBall.Run();
     delete inter;
 

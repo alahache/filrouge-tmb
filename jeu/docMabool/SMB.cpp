@@ -46,11 +46,6 @@ void SMB::SetInterface(Interface* myInterface)
 	interface = myInterface;
 }
 
-Interface* SMB::GetInterface()
-{
-	return (interface);
-}
-
 
 
 void SMB::loadRessources()
@@ -115,14 +110,15 @@ void SMB::loadRessources()
 
 
 
-bool SMB::hitTest(Sprite* sprite, Event event )
+bool SMB::hitTest(Sprite* sprite)
 {
-    Rect<int> ObjectRect(sprite->GetPosition().x,
+	sf::Vector2f pos = GetMousePosition();
+    Rect<float> ObjectRect(sprite->GetPosition().x,
                          sprite->GetPosition().y,
                          sprite->GetPosition().x+ sprite->GetSize().x,
                          sprite->GetPosition().y+ sprite->GetSize().y);
 
-     if(ObjectRect.Contains(event.MouseButton.X, event.MouseButton.Y))
+     if(ObjectRect.Contains(pos.x ,pos.y))
      {
          return true;
      }
@@ -154,6 +150,14 @@ bool SMB::collisionTest(Sprite* sprite, Sprite* sprite2)
         return false;
 
     return true;
+}
+
+
+sf::Vector2f SMB::GetMousePosition() {
+	sf::Vector2f pos;
+	pos.x = interface->GetX()*SCREEN_W;
+	pos.y = interface->GetY()*SCREEN_H;
+	return pos;
 }
 
 
@@ -193,9 +197,6 @@ void SMB::Run()
     float YBall4 = 0;
 
 
-    //const Input & input = app.GetInput(); // input : référence constante
-
-
     // Boucle principale
     while (app->IsOpened())
     {
@@ -207,30 +208,30 @@ void SMB::Run()
                 app->Close();
 
             // Si on clicke sur un sprite :
-            if(Event::isMousePressed)
+            if(interface->isMousePressed())
             {
-                if(hitTest(spriteBall,event))
+                if(hitTest(spriteBall))
                 {
                     XBall = rand()%730;
                     YBall = -150;
                     spriteBall->SetPosition(XBall,YBall);
                     score += 5;
                 }
-                if(hitTest(spriteBall2,event))
+                if(hitTest(spriteBall2))
                 {
                     XBall2 = rand()%730;
                     YBall2 =  -150;
                     spriteBall2->SetPosition(XBall2,YBall2);
                     score += 5;
                 }
-                if(hitTest(spriteBall3,event))
+                if(hitTest(spriteBall3))
                 {
                     XBall3 = rand()%730;
                     YBall3 =  -150;
                     spriteBall3->SetPosition(XBall3,YBall3);
                     score += 5;
                 }
-                if(hitTest(spriteBall4,event))
+                if(hitTest(spriteBall4))
                 {
                     XBall4 = rand()%730;
                     YBall4 =  -150;
