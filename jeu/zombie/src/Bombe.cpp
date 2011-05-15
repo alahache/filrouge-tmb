@@ -1,8 +1,8 @@
 #include "ZombieGame.h"
 #include "Bombe.h"
 
-Bombe::Bombe(sf::Image *img, ZombieGame* pGame)
-	: GameSprite(img), game(pGame)
+Bombe::Bombe(sf::Image *img, ZombieGame* pGame, Catapulte* _catapulte)
+	: GameSprite(img), game(pGame), catapulte(_catapulte)
 {
     Init();
 }
@@ -11,7 +11,7 @@ Bombe::~Bombe() {
 	// Nothing to delete either
 }
 
-void Bombe::Update()
+void Bombe::eye()
 {
 	angle = atan((game->GetInterface().GetY()-yEye) / (game->GetInterface().GetX()-xEye));
 	if((game->GetInterface().GetX()-xEye) * (game->GetInterface().GetX()-xEye)
@@ -28,24 +28,19 @@ void Bombe::Update()
 	
 }
 
-sf::Vector2f Bombe::GetPosBombe()
-{
-	return direction;
-}
-
-float Bombe::GetSizeBombe()
-{
-	return (Width());
-}
 
 void Bombe::Init() {
     // Type :
 	type = "bombe";
-	bind = true;
+	attached = true;
 
 	// Position :
 	direction.x = 350;
 	direction.y = 350;
+
+	SetX(POSX);
+	SetY(POSY);
+
     
     // Direction :
     speed = 10;
@@ -62,6 +57,43 @@ void Bombe::SetPosition(float x, float y)
 }
 
 
+void Bombe::Update() {
+	if(game->GetInterface().isMousePressed())
+	{
+		sf::Vector2f pos = game->GetMousePosition();
+		sf::FloatRect r1 = GetHitBox();
+			r1.Left		+= X();
+			r1.Right	+= X();
+			r1.Top		+= Y();
+			r1.Bottom	+= Y();
+		if(r1.Contains(pos.x, pos.y))
+		{
+			drag = true;
+			
+			// TODO : limites cercle
+			eye();
+			
+			SetX(pos.x);
+			SetY(pos.y);
+			catapulte -> DrawLines(pos.x, pos.y);
+		}
+	}
+	else if(drag == true)
+	{
+		drag = false;
+		// TODO calculer direction
+		calculateDirection();
+	}
+	else
+	{
+		// Move the sprite :
+		// TODO maj direction
+		calculateDirection();
+		Move(direction);
+	}
+	
+}
+
 void Bombe::SetSpeed(float unSpeed) {
 	speed = unSpeed;
 }
@@ -76,11 +108,11 @@ void Bombe::limitMovement(int x, int y, float taille) {
 	yEye = y;
 	sizeCircleMove = taille;
 	angle = 0;
-	criticDist = GetSizeBombe()/2-sizeCircleMove/2-5;
+	criticDist = Width()/2-sizeCircleMove/2-5;
 }
 
 void Bombe::calculateDirection() {
-	if(!bind)
+	if(!attached)
 	{
 		// Simulate the translation :
 		direction.x += 1;

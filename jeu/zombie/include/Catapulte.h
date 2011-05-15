@@ -4,8 +4,6 @@
 #include <SFML/Graphics.hpp>
 
 #include "Game.h"
-#include "Bombe.h"
-
 
 class ZombieGame;
 
@@ -14,26 +12,16 @@ class Catapulte
 	public:
 
 		// =================================== Constructors / Destructor
-		Catapulte(ZombieGame* pGame=0);
+		Catapulte(ZombieGame* pGame, float x1, float y1, float x2, float y2);
 		virtual ~Catapulte();
 
 		// =================================== Public methods
-		void init();
-
-		// =================================== Abstract methods
-		virtual void Update();
-
-		// =================================== Getters
+		void DrawLines(float posX, float posY);
 		
-
-		// =================================== Setters
-		void SetPosBombe(float anyXBombe, float anyYBombe);
-
 	protected:
 
 		// =================================== Attributes
 		ZombieGame* game;
-		Bombe* bombe;
 		
 		// Define the first point :
 		float xAttLeft;
@@ -42,9 +30,6 @@ class Catapulte
 		// Define the second point :
 		float xAttRight;
 		float yAttRight;
-		
-		// Define the Bombe position :
-		sf::Vector2f posBombe;
 		
 		// Define the two lines :
 		sf::Shape line1;
@@ -55,7 +40,6 @@ class Catapulte
 		//color : sf::Color::Black;
 		
 		// =================================== Protected methods
-        void drawLines();
 };
 
 #endif

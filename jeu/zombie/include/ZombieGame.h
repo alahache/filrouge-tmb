@@ -1,11 +1,13 @@
-#ifndef ZombieGameGAME_H
-#define ZombieGameGAME_H
+#ifndef ZOMBIEGAME_H
+#define ZOMBIEGAME_H
 
 #include <SFML/Graphics.hpp>
 #include <vector>
 
 #include "Interface.h"
 #include "Game.h"
+#include "Bombe.h"
+#include "Camera.h"
 #include "AnimatedSprite.h"
 
 class ZombieGame : public Game {
@@ -18,31 +20,38 @@ class ZombieGame : public Game {
         ZombieGame();
         ~ZombieGame();
         
+        // =================================== Public methods
+        sf::Vector2f GetMousePosition();
+        
         // =================================== Redefined methods
         void Run();
         
         // =================================== Getters / Setters
         void SetInterface(Interface* myInterface);
         Interface& GetInterface();
+        Camera& GetCamera();
     
     protected:
     	// =================================== Redefined protected methods
         void loadRessources();
         void initGame();
         
-        // =================================== Attributes
-        Interface* interface;
-        GameSprite* bombe;
-        
-        sf::Image* imgzombie;
-        AnimatedSprite* sprzombie;
-        sf::Image* imgfond;
-        sf::Sprite* sprfond;
-        sf::Image* imgbombe;
-        sf::Sprite* sprbombe;
-        
-        
-        int offset;
+		// =================================== Attributes
+		Interface* interface;
+		Camera* camera;
+		Bombe* bombe;
+		Catapulte* catapulte;
+		
+		sf::Image* imgzombie;
+		AnimatedSprite* sprzombie;
+		sf::Image* imgfond;
+		sf::Sprite* sprfond;
+		sf::Image* imgterrain;
+		sf::Sprite* sprterrain;
+		sf::Image* imgbombe;
+		GameSprite* sprbombe;
+		int viewoffset;
+
 };
 
 #endif

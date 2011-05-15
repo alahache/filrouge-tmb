@@ -6,21 +6,22 @@
 
 #include "GameSprite.h"
 #include "Game.h"
+#include "Catapulte.h"
 
 class ZombieGame;
 
 class Bombe : public GameSprite {
     public:
+    
+    	static const float POSX = 1600;
+    	static const float POSY = 300;
     	
     	// =================================== Constructors / Destructor
-        Bombe(sf::Image* img, ZombieGame* pGame=0);
+        Bombe(sf::Image* img, ZombieGame* pGame, Catapulte* _catapulte);
         ~Bombe();
         
         // =================================== Redefined methods from GameSprite
        	void Update();
-       	
-       	sf::Vector2f GetPosBombe();
-       	float GetSizeBombe();
        	
        	// =================================== Public methods
        	void Init();
@@ -32,8 +33,9 @@ class Bombe : public GameSprite {
     
     	// =================================== Attributes
     	ZombieGame* game;
+    	Catapulte* catapulte;
+    	
         sf::Vector2f direction;
-        
         float speed;
         float angle;
         
@@ -44,9 +46,11 @@ class Bombe : public GameSprite {
         int yEye;
         
         // Test if the ball is attach or not :
-        bool bind;
+        bool attached;
+        bool drag;
         
         // =================================== Protected methods
+        void eye();
         void limitMovement(int x, int y, float taille);
         void calculateDirection();
 };
