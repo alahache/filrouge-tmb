@@ -23,33 +23,10 @@ Catapulte::~Catapulte()
 	// delete : nothing
 }
 
-void Catapulte::Update()
+void Catapulte::DrawLines(float posX, float posY)
 {
-	if(game->GetInterface().isMousePressed())
-	{
-		posBombe = bombe->GetPosBombe();
-		SetPosBombe(posBombe.x, posBombe.y);
-		drawLines();
-	}
-	else
-	{
-		// Nothing to be done
-	}
-	
-}
-
-
-void Catapulte::SetPosBombe(float anyXBombe, float anyYBombe)
-{
-	posBombe.x = anyXBombe;
-	posBombe.y = anyYBombe;
-}
-
-
-void Catapulte::drawLines()
-{
-	line1 = sf::Shape::Line(xAttLeft, yAttLeft, posBombe.x, posBombe.y, 20, sf::Color::Black);
-	line2 = sf::Shape::Line(xAttRight, xAttRight, posBombe.x, posBombe.y, 20, sf::Color::Black);
+	line1 = sf::Shape::Line(xAttLeft, yAttLeft, posX, posY, 20, sf::Color::Black);
+	line2 = sf::Shape::Line(xAttRight, xAttRight, posX, posY, 20, sf::Color::Black);
 	game->GetWindow()->Draw(line1);
 	game->GetWindow()->Draw(line2);
 }

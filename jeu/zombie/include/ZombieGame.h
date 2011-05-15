@@ -19,6 +19,9 @@ class ZombieGame : public Game {
         ZombieGame();
         ~ZombieGame();
         
+        // =================================== Public methods
+        sf::Vector2f GetMousePosition();
+        
         // =================================== Redefined methods
         void Run();
         

@@ -1,10 +1,20 @@
 #include "ZombieGame.h"
 #include "Bombe.h"
 
-Bombe::Bombe(sf::Image *img, ZombieGame* pGame)
-	: GameSprite(img), game(pGame)
+Bombe::Bombe(sf::Image *img, ZombieGame* pGame, Catapulte* _catapulte)
+	: GameSprite(img), game(pGame), catapulte(_catapulte)
 {
-    Init();
+    // Type :
+	type = "bombe";
+
+	// Position :
+	SetX(POSX);
+	SetY(POSY);
+    
+    // Direction :
+    speed = 10;
+    //angle = -45;
+    calculateDirection();
 }
 
 Bombe::~Bombe() {
@@ -12,38 +22,37 @@ Bombe::~Bombe() {
 }
 
 void Bombe::Update() {
+	if(game->GetInterface().isMousePressed())
+	{
+		sf::Vector2f pos = game->GetMousePosition();
+		sf::FloatRect r1 = GetHitBox();
+			r1.Left		+= X();
+			r1.Right	+= X();
+			r1.Top		+= Y();
+			r1.Bottom	+= Y();
+		if(r1.Contains(pos.x, pos.y))
+		{
+			drag = true;
+			
+			// TODO : limites cercle
+			
+			SetX(pos.x);
+			SetY(pos.y);
+			catapulte -> DrawLines(pos.x, pos.y);
+		}
+	}
+	else if(drag == true)
+	{
+		drag = false;
+		// TODO calculer direction
+	}
+	else
+	{
+		// Move the sprite :
+		// TODO maj direction
+		Move(direction);
+	}
 	
-	// Define the movement posibilities :
-	
-	
-	// Move the sprite :
-	Move(direction);
-	
-}
-
-sf::Vector2f Bombe::GetPosBombe()
-{
-	return direction;
-}
-
-float Bombe::GetSizeBombe()
-{
-	return (Width());
-}
-
-
-void Bombe::Init() {
-    // Type :
-	type = "bombe";
-
-	// Position :
-	direction.x = 0;
-	direction.y = 0;
-    
-    // Direction :
-    speed = 10;
-    //angle = -45;
-    calculateDirection();
 }
 
 void Bombe::SetSpeed(float unSpeed) {
@@ -60,7 +69,7 @@ void Bombe::limitMovement(int x, int y, float taille) {
 	yEye = y;
 	sizeCircleMove = taille;
 	angle = 0;
-	criticDist = GetSizeBombe()/2-sizeCircleMove/2-5;
+	criticDist = Width()/2-sizeCircleMove/2-5;
 }
 
 void Bombe::updateLimit() {

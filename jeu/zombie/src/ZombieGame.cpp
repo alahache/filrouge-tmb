@@ -47,7 +47,12 @@ void ZombieGame::loadRessources() {
 
 void ZombieGame::initGame() {
 	isGameOn = true;
-	camera->Follow(sprzombie);
+}
+
+sf::Vector2f ZombieGame::GetMousePosition() {
+	sf::Vector2f pos;
+	pos.x = interface->GetX()*SCREEN_W + camera->GetRect().Left;
+	pos.y = interface->GetY()*SCREEN_H + camera->GetRect().Top;
 }
 
 void ZombieGame::Run() {
@@ -72,16 +77,6 @@ void ZombieGame::Run() {
 			}
 		}
 		
-		if(isGameOn) {
-		
-			sprzombie->Animate();
-		
-			// Update all sprites :
-			for(int i=0; i<sprites.size(); i++) {
-				sprites[i]->Update();
-			}
-		}
-		
 		// Set camera
 		if(interface->GetX() >= 0.7)
 			camera->Move(10, 0);
@@ -97,6 +92,16 @@ void ZombieGame::Run() {
 		
 		// Draw terrain
 		window->Draw(*sprterrain);
+		
+		if(isGameOn) {
+		
+			sprzombie->Animate();
+		
+			// Update all sprites :
+			for(int i=0; i<sprites.size(); i++) {
+				sprites[i]->Update();
+			}
+		}
 		
 		// Draw all the objects on the window
 		for(int i=0; i<sprites.size(); i++) {
