@@ -17,7 +17,7 @@ class Bombe : public GameSprite {
     	static const float POSY = 245;
     	
     	// =================================== Constructors / Destructor
-        Bombe(sf::Image* img, ZombieGame* pGame, Catapulte* _catapulte);
+        Bombe(sf::Image* img, ZombieGame* pGame, Catapulte* _catapulte, sf::Image* _imgterrain);
         ~Bombe();
         
         // =================================== Redefined methods from GameSprite
@@ -32,6 +32,8 @@ class Bombe : public GameSprite {
     	// =================================== Attributes
     	ZombieGame* game;
     	Catapulte* catapulte;
+    	sf::Image* imgterrain;
+    	sf::Vector2f posOrigin;
     	
         sf::Vector2f direction;
         float speed;
@@ -46,6 +48,7 @@ class Bombe : public GameSprite {
         // Test if the ball is attach or not :
         bool attached;
         bool drag;
+        bool lancee;
         
         // =================================== Protected methods
         void limitMovement(int x, int y, float taille);

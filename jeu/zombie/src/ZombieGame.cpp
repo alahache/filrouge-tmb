@@ -42,7 +42,7 @@ void ZombieGame::loadRessources() {
 	imgbombe = new sf::Image();
 	if (!imgbombe->LoadFromFile("images/bombe.png"))
 		std::cout << "ERREUR: chargement de l'image";
-	sprbombe = new Bombe(imgbombe, this, catapulte);
+	sprbombe = new Bombe(imgbombe, this, catapulte, imgterrain);
 	AddSprite(sprbombe);
 	
 	imgzombie = new sf::Image();
@@ -125,6 +125,10 @@ void ZombieGame::Run() {
 
 Interface& ZombieGame::GetInterface() {
     return *interface;
+}
+
+Camera& ZombieGame::GetCamera() {
+    return *camera;
 }
 
 void ZombieGame::SetInterface(Interface* myInterface) {

@@ -5,15 +5,16 @@
 
 using namespace std;
 
-Bombe::Bombe(sf::Image *img, ZombieGame* pGame, Catapulte* _catapulte)
-	: GameSprite(img), game(pGame), catapulte(_catapulte)
+Bombe::Bombe(sf::Image *img, ZombieGame* pGame, Catapulte* _catapulte, sf::Image* _imgterrain)
+	: GameSprite(img), game(pGame), catapulte(_catapulte), imgterrain(_imgterrain)
 {
     // Type :
 	type = "bombe";
 
 	// Position :
-	SetX(POSX);
-	SetY(POSY);
+	posOrigin.x = POSX;
+	posOrigin.y = POSY;
+	SetPosition(posOrigin);
     
     // Direction :
     speed = 10;
@@ -25,38 +26,50 @@ Bombe::~Bombe() {
 }
 
 void Bombe::Update() {
-	if(game->GetInterface().isMousePressed())
+	if(lancee)
 	{
-		sf::Vector2f pos = game->GetMousePosition();
-		sf::FloatRect r1 = GetHitBox();
-			r1.Left		+= X();
-			r1.Right	+= X();
-			r1.Top		+= Y();
-			r1.Bottom	+= Y();
-		if(r1.Contains(pos.x, pos.y))
+		direction.y += 1;
+		Move(direction);
+		if(X() < 0 || X() > imgterrain->GetWidth() || Y() > imgterrain->GetHeight())
 		{
-			drag = true;
+			lancee = false;
+			game->GetCamera().Stop();
+			SetPosition(posOrigin);
 		}
-		
-		if(drag == true)
-		{
-			// TODO : limites cercle
-			
-			SetX(pos.x - Width()/2);
-			SetY(pos.y - Height()/2);
-			catapulte -> DrawLines(pos.x, pos.y);
-		}
-	}
-	else if(drag == true)
-	{
-		drag = false;
-		// TODO calculer direction
 	}
 	else
 	{
-		// Move the sprite :
-		// TODO maj direction
-		Move(direction);
+		if(game->GetInterface().isMousePressed())
+		{
+			sf::Vector2f pos = game->GetMousePosition();
+			sf::FloatRect r1 = GetHitBox();
+				r1.Left		+= X();
+				r1.Right	+= X();
+				r1.Top		+= Y();
+				r1.Bottom	+= Y();
+			if(r1.Contains(pos.x, pos.y))
+			{
+				drag = true;
+			}
+		
+			if(drag == true)
+			{
+				// TODO : limites cercle
+			
+				SetX(pos.x - Width()/2);
+				SetY(pos.y - Height()/2);
+				catapulte -> DrawLines(pos.x, pos.y);
+			}
+		}
+		else if(drag == true)
+		{
+			drag = false;
+			lancee = true;
+			direction = -(GetPosition() - posOrigin);
+			direction.x = direction.x / 5;
+			direction.y = direction.y / 5;
+			game->GetCamera().Follow(this);
+		}
 	}
 	
 }
