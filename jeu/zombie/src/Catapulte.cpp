@@ -25,8 +25,8 @@ Catapulte::~Catapulte()
 
 void Catapulte::DrawLines(float posX, float posY)
 {
-	line1 = sf::Shape::Line(xAttLeft, yAttLeft, posX, posY, 20, sf::Color::Black);
-	line2 = sf::Shape::Line(xAttRight, xAttRight, posX, posY, 20, sf::Color::Black);
+	line1 = sf::Shape::Line(xAttLeft, yAttLeft, posX, posY, LINESIZE, sf::Color::Black);
+	line2 = sf::Shape::Line(xAttRight, yAttRight, posX, posY, LINESIZE, sf::Color::Black);
 	game->GetWindow()->Draw(line1);
 	game->GetWindow()->Draw(line2);
 }

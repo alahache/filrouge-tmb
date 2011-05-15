@@ -6,6 +6,7 @@
 #include "ZombieGame.h"
 #include "Bombe.h"
 #include "Zombie.h"
+#include "Bombe.h"
 
 using namespace std;
 
@@ -24,9 +25,7 @@ ZombieGame::~ZombieGame() {
 }
 
 void ZombieGame::loadRessources() {
-	imgzombie = new sf::Image();
-	if (!imgzombie->LoadFromFile("images/zombie.png"))
-		std::cout << "ERREUR: chargement de l'image";
+	catapulte = new Catapulte(this, 1550, 260, 1633, 260);
 		
 	imgfond = new sf::Image();
 	if (!imgfond->LoadFromFile("images/fond.png"))
@@ -42,10 +41,19 @@ void ZombieGame::loadRessources() {
 	
 	imgterrain = new sf::Image();
 	if (!imgterrain->LoadFromFile("images/terrain.png"))
-		std::cout << "ERREUR: chargement de SCREEN_Wl'image";
+		std::cout << "ERREUR: chargement de l'image";
 	sprterrain = new sf::Sprite(*imgterrain);
 	sprterrain->Move(0, 0);
 	
+	imgbombe = new sf::Image();
+	if (!imgbombe->LoadFromFile("images/bombe.png"))
+		std::cout << "ERREUR: chargement de l'image";
+	sprbombe = new Bombe(imgbombe, this, catapulte);
+	AddSprite(sprbombe);
+	
+	imgzombie = new sf::Image();
+	if (!imgzombie->LoadFromFile("images/zombie.png"))
+		std::cout << "ERREUR: chargement de l'image";
 	sprzombie = new Zombie(imgzombie, imgterrain);
 	AddSprite(sprzombie);
 	
@@ -60,6 +68,7 @@ sf::Vector2f ZombieGame::GetMousePosition() {
 	sf::Vector2f pos;
 	pos.x = interface->GetX()*SCREEN_W + camera->GetRect().Left;
 	pos.y = interface->GetY()*SCREEN_H + camera->GetRect().Top;
+	return pos;
 }
 
 void ZombieGame::Run() {

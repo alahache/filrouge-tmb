@@ -9,6 +9,7 @@
 #include "Bombe.h"
 #include "Camera.h"
 #include "AnimatedSprite.h"
+#include "Catapulte.h"
 
 class ZombieGame : public Game {
     public:
@@ -37,11 +38,13 @@ class ZombieGame : public Game {
         void initGame();
         
 		// =================================== Attributes
+		// Game engine :
 		Interface* interface;
 		Camera* camera;
 		Bombe* bombe;
 		Catapulte* catapulte;
-		
+				
+		// Sprites :
 		sf::Image* imgzombie;
 		AnimatedSprite* sprzombie;
 		sf::Image* imgfond;
