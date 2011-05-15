@@ -4,22 +4,18 @@
 
 //================================================================ PUBLIC
 
-Catapulte::Catapulte(ZombieGame* pGame)
+Catapulte::Catapulte(ZombieGame* pGame, float x1, float y1, float x2, float y2)
 		: game(pGame)
 {
 	// Positions :
 	
 	// Define the first point :
-	xAttLeft = 0;
-	yAttLeft = 0;
+	xAttLeft = x1;
+	yAttLeft = y1;
 	
 	// Define the second point :
-	xAttRight = 0;
-	yAttRight = 0;
-
-	// Define the lines :
-	line1 = sf::Shape::Line(xAttLeft, yAttLeft, posBombe.x, posBombe.y, 20, sf::Color::Black);
-	line2 = sf::Shape::Line(xAttRight, xAttRight, posBombe.x, posBombe.y, 20, sf::Color::Black);
+	xAttRight = x2;
+	yAttRight = y2;
 }
 
 Catapulte::~Catapulte()
@@ -47,12 +43,13 @@ void Catapulte::SetPosBombe(float anyXBombe, float anyYBombe)
 {
 	posBombe.x = anyXBombe;
 	posBombe.y = anyYBombe;
-	drawLines();
 }
 
 
 void Catapulte::drawLines()
 {
+	line1 = sf::Shape::Line(xAttLeft, yAttLeft, posBombe.x, posBombe.y, 20, sf::Color::Black);
+	line2 = sf::Shape::Line(xAttRight, xAttRight, posBombe.x, posBombe.y, 20, sf::Color::Black);
 	game->GetWindow()->Draw(line1);
 	game->GetWindow()->Draw(line2);
 }

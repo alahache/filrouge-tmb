@@ -14,7 +14,7 @@ class Catapulte
 	public:
 
 		// =================================== Constructors / Destructor
-		Catapulte(ZombieGame* pGame=0);
+		Catapulte(ZombieGame* pGame, float x1, float y1, float x2, float y2);
 		virtual ~Catapulte();
 
 		// =================================== Public methods
