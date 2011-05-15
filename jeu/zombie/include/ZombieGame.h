@@ -1,11 +1,12 @@
-#ifndef ZombieGameGAME_H
-#define ZombieGameGAME_H
+#ifndef ZOMBIEGAME_H
+#define ZOMBIEGAME_H
 
 #include <SFML/Graphics.hpp>
 #include <vector>
 
 #include "Interface.h"
 #include "Game.h"
+#include "Camera.h"
 #include "AnimatedSprite.h"
 
 class ZombieGame : public Game {
@@ -24,19 +25,23 @@ class ZombieGame : public Game {
         // =================================== Getters / Setters
         void SetInterface(Interface* myInterface);
         Interface& GetInterface();
+        Camera& GetCamera();
     
     protected:
     	// =================================== Redefined protected methods
         void loadRessources();
         void initGame();
         
-        // =================================== Attributes
-        Interface* interface;
-        sf::Image* imgzombie;
-        AnimatedSprite* sprzombie;
-        sf::Image* imgfond;
-        sf::Sprite* sprfond;
-        int viewoffset;
+		// =================================== Attributes
+		Interface* interface;
+		Camera* camera;
+		sf::Image* imgzombie;
+		AnimatedSprite* sprzombie;
+		sf::Image* imgfond;
+		sf::Sprite* sprfond;
+		sf::Image* imgterrain;
+		sf::Sprite* sprterrain;
+		int viewoffset;
 };
 
 #endif

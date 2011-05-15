@@ -22,7 +22,6 @@ void Zombie::Update() {
         fcpt = 0;
 	    const int max = 1;
 	    int sum = 0;
-	    std::cout << Y() << std::endl;
 	    while(sum < max) {
 	        SetX(X()+1);
 	        sum++;

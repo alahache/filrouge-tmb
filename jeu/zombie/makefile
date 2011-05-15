@@ -4,8 +4,8 @@ CC=g++
 EXEC_NAME=zombie
 INCLUDES=-I $(INC_DIR)
 LIBS = -lsfml-graphics -lsfml-window -lsfml-system
-OBJ_FILES = ZombieGame.o Main.o Interface.o GameSprite.o Game.o AnimatedSprite.o Zombie.o Bombe.o Catapulte.o
-OPT_CMP=-c
+OBJ_FILES = ZombieGame.o Main.o Interface.o GameSprite.o Game.o Camera.o AnimatedSprite.o Zombie.o Bombe.o Catapulte.o
+OPT_CMP=-c -ggdb
 OPT_EDL=-o
 
 # Lancement de la chaîne de compilation :
