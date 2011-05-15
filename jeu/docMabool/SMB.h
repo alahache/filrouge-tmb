@@ -15,9 +15,9 @@ class SMB {
         ~SMB();
 
         void Run();
+        sf::Vector2f GetMousePosition();
 
         void SetInterface(Interface* myInterface);
-        Interface* GetInterface();
 
         sf::RenderWindow* GetRenderWindow(); //Emulation de la webcam
 
@@ -25,7 +25,7 @@ class SMB {
     private:
         void loadRessources();
 
-        bool hitTest(sf::Sprite* sprite, sf::Event event );
+        bool hitTest(sf::Sprite* sprite);
         bool collisionTest(sf::Sprite* sprite, sf::Sprite* sprite2);
 
 
