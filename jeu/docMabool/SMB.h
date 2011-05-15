@@ -2,6 +2,7 @@
 #define SMB_H
 
 #include <SFML/Graphics.hpp>
+#include "Interface.h"
 
 
 class SMB {
@@ -15,20 +16,20 @@ class SMB {
 
         void Run();
 
-        //void SetInterface(Interface* myInterface);
+        void SetInterface(Interface* myInterface);
+        Interface* GetInterface();
 
         sf::RenderWindow* GetRenderWindow(); //Emulation de la webcam
 
 
     private:
         void loadRessources();
-        //void initGame();
 
         bool hitTest(sf::Sprite* sprite, sf::Event event );
         bool collisionTest(sf::Sprite* sprite, sf::Sprite* sprite2);
 
 
-        //Interface* interface;
+        Interface* interface;
 
         sf::Image* imageBackground;
         sf::Sprite* spriteBackground;
@@ -45,10 +46,6 @@ class SMB {
         sf::Image* imageBall4;
         sf::Sprite* spriteBall4;
 
-        /*
-        sf::Font* font;
-        sf::String* text;
-        */
         sf::RenderWindow* app;
 
         bool isGameOn;

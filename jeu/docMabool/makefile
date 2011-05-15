@@ -2,7 +2,7 @@ CC = g++
 EXEC_NAME = exe
 INCLUDES = 
 LIBS = -lsfml-graphics -lsfml-window -lsfml-system
-OBJ_FILES = main.cpp SMB.h SMB.cpp
+OBJ_FILES = main.cpp SMB.h SMB.cpp Interface.h Interface.cpp
 OPT_CMP=-c
 OPT_EDL=-o
 
