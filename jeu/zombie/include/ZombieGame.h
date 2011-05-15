@@ -6,6 +6,7 @@
 
 #include "Interface.h"
 #include "Game.h"
+#include "Bombe.h"
 #include "Camera.h"
 #include "AnimatedSprite.h"
 #include "Catapulte.h"
@@ -40,7 +41,9 @@ class ZombieGame : public Game {
 		// Game engine :
 		Interface* interface;
 		Camera* camera;
-		
+		Bombe* bombe;
+		Catapulte* catapulte;
+				
 		// Sprites :
 		sf::Image* imgzombie;
 		AnimatedSprite* sprzombie;
@@ -50,7 +53,8 @@ class ZombieGame : public Game {
 		sf::Sprite* sprterrain;
 		sf::Image* imgbombe;
 		GameSprite* sprbombe;
-		Catapulte* catapulte;
+		int viewoffset;
+
 };
 
 #endif

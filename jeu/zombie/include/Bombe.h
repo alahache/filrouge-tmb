@@ -24,6 +24,8 @@ class Bombe : public GameSprite {
        	void Update();
        	
        	// =================================== Public methods
+       	void Init();
+       	void SetPosition(float x, float y);
        	void SetSpeed(float anySpeed);
        	void SetAngle(float anyAngle);
     
@@ -48,8 +50,8 @@ class Bombe : public GameSprite {
         bool drag;
         
         // =================================== Protected methods
+        void eye();
         void limitMovement(int x, int y, float taille);
-        void updateLimit();
         void calculateDirection();
 };
 

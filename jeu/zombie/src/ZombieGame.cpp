@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "ZombieGame.h"
+#include "Bombe.h"
 #include "Zombie.h"
 #include "Bombe.h"
 
@@ -32,6 +33,12 @@ void ZombieGame::loadRessources() {
 		std::cout << "ERREUR: chargement de l'image";
 	sprfond = new sf::Sprite(*imgfond);
 	sprfond->Move(0, 0);
+	
+	imgbombe = new sf::Image();
+	if (!imgbombe->LoadFromFile("images/bombe.png"))
+		std::cout << "ERREUR: chargement de l'image";
+	sprbombe = new Bombe(imgbombe, this, catapulte);
+	AddSprite(sprbombe);
 	
 	imgterrain = new sf::Image();
 	if (!imgterrain->LoadFromFile("images/terrain.png"))
@@ -113,6 +120,13 @@ void ZombieGame::Run() {
 			}
 		}
 		
+		window->SetView(sf::View(sf::FloatRect(viewoffset, 0, viewoffset+800, 600)));
+
+		// Clear screen
+		window->Clear(sf::Color(255, 255, 255));
+		
+		window->Draw(*sprfond);
+				
 		// Draw all the objects on the window
 		for(int i=0; i<sprites.size(); i++) {
 			window->Draw(*(sprites[i]));
