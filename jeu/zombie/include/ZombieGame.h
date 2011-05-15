@@ -53,8 +53,6 @@ class ZombieGame : public Game {
 		sf::Sprite* sprterrain;
 		sf::Image* imgbombe;
 		GameSprite* sprbombe;
-		int viewoffset;
-
 };
 
 #endif

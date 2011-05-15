@@ -34,12 +34,6 @@ void ZombieGame::loadRessources() {
 	sprfond = new sf::Sprite(*imgfond);
 	sprfond->Move(0, 0);
 	
-	imgbombe = new sf::Image();
-	if (!imgbombe->LoadFromFile("images/bombe.png"))
-		std::cout << "ERREUR: chargement de l'image";
-	sprbombe = new Bombe(imgbombe, this, catapulte);
-	AddSprite(sprbombe);
-	
 	imgterrain = new sf::Image();
 	if (!imgterrain->LoadFromFile("images/terrain.png"))
 		std::cout << "ERREUR: chargement de l'image";
@@ -119,13 +113,6 @@ void ZombieGame::Run() {
 				sprites[i]->Update();
 			}
 		}
-		
-		window->SetView(sf::View(sf::FloatRect(viewoffset, 0, viewoffset+800, 600)));
-
-		// Clear screen
-		window->Clear(sf::Color(255, 255, 255));
-		
-		window->Draw(*sprfond);
 				
 		// Draw all the objects on the window
 		for(int i=0; i<sprites.size(); i++) {
