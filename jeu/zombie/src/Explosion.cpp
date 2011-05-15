@@ -6,8 +6,8 @@ using namespace std;
 
 //================================================================ PUBLIC
 
-Explosion::Explosion(sf::Image *pImg, float x, float y)
-	: AnimatedSprite(pImg, 1, 5, 25, 85, 85)
+Explosion::Explosion(sf::Image *pImg, Game* _game, float x, float y)
+	: AnimatedSprite(pImg, 1, 5, 25, 85, 85), game(_game)
 {
     SetX(x - Width()/2);
     SetY(y - Height()/2);
@@ -27,5 +27,5 @@ void Explosion::HitBy(GameSprite* pSpr) {
 }
 
 void Explosion::End() {
-	
+	game->RemoveSprite(this);
 }

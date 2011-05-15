@@ -4,11 +4,12 @@
 #include <SFML/Graphics.hpp>
 
 #include "AnimatedSprite.h"
+#include "Game.h"
 
 class Explosion : public AnimatedSprite {
     public:
     	// =================================== Constructors / Destructor
-        Explosion(sf::Image *pImg, float x, float y);
+        Explosion(sf::Image *pImg, Game* _game, float x, float y);
         ~Explosion();
         
         // =================================== Public methods
@@ -22,6 +23,7 @@ class Explosion : public AnimatedSprite {
     
     protected:
         // =================================== Attributes
+        Game* game;
 };
 
 #endif
