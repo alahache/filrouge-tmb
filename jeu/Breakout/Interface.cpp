@@ -10,11 +10,11 @@
 #define KEYISPRESSED 1236
 #define KEYSEMCLICK 1237
 
-#define TOLERANCE 10
+#define TOLERANCE 8
 
 #define NBPIXELSMIN 10
 
-#define SEUILAPPROCHE 0.15
+#define SEUILAPPROCHE 0.02
 
 using namespace std;
 
