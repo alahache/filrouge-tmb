@@ -13,8 +13,8 @@ class ZombieGame;
 class Bombe : public GameSprite {
     public:
     
-    	static const float POSX = 1600;
-    	static const float POSY = 300;
+    	static const float POSX = 1565;
+    	static const float POSY = 245;
     	
     	// =================================== Constructors / Destructor
         Bombe(sf::Image* img, ZombieGame* pGame, Catapulte* _catapulte);

@@ -5,6 +5,8 @@
 
 #include "Game.h"
 
+#define LINESIZE 10
+
 class ZombieGame;
 
 class Catapulte
@@ -34,10 +36,6 @@ class Catapulte
 		// Define the two lines :
 		sf::Shape line1;
 		sf::Shape line2;
-		
-		// Lines properties :
-		//int thickness = 20;
-		//color : sf::Color::Black;
 		
 		// =================================== Protected methods
 };

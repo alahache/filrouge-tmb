@@ -1,5 +1,9 @@
+#include <iostream>
+
 #include "ZombieGame.h"
 #include "Bombe.h"
+
+using namespace std;
 
 Bombe::Bombe(sf::Image *img, ZombieGame* pGame, Catapulte* _catapulte)
 	: GameSprite(img), game(pGame), catapulte(_catapulte)
@@ -14,7 +18,6 @@ Bombe::Bombe(sf::Image *img, ZombieGame* pGame, Catapulte* _catapulte)
     // Direction :
     speed = 10;
     //angle = -45;
-    calculateDirection();
 }
 
 Bombe::~Bombe() {
@@ -33,11 +36,14 @@ void Bombe::Update() {
 		if(r1.Contains(pos.x, pos.y))
 		{
 			drag = true;
-			
+		}
+		
+		if(drag == true)
+		{
 			// TODO : limites cercle
 			
-			SetX(pos.x);
-			SetY(pos.y);
+			SetX(pos.x - Width()/2);
+			SetY(pos.y - Height()/2);
 			catapulte -> DrawLines(pos.x, pos.y);
 		}
 	}
