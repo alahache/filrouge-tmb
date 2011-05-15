@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "ZombieGame.h"
+#include "Bombe.h"
 
 ZombieGame::ZombieGame()
 	: Game(SCREEN_W, SCREEN_H, "ZombieGame") {
@@ -30,6 +31,14 @@ void ZombieGame::loadRessources() {
 	
 	sprfond = new sf::Sprite(*imgfond);
 	sprfond->Move(0, 0);
+	
+	imgbombe = new sf::Image();
+	if (!imgbombe->LoadFromFile("images/bombe.png"))
+		std::cout << "ERREUR: chargement de l'image";
+	bombe = new Bombe(imgbombe, this);
+	AddSprite(bombe);
+		
+		
 }
 
 void ZombieGame::initGame() {
@@ -74,6 +83,7 @@ void ZombieGame::Run() {
 		window->Clear(sf::Color(255, 255, 255));
 		
 		window->Draw(*sprfond);
+		window->Draw(*sprbombe);
 		
 		// Draw all the objects on the window
 		for(int i=0; i<sprites.size(); i++) {

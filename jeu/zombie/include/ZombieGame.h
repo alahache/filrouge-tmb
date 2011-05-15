@@ -32,10 +32,16 @@ class ZombieGame : public Game {
         
         // =================================== Attributes
         Interface* interface;
+        GameSprite* bombe;
+        
         sf::Image* imgzombie;
         AnimatedSprite* sprzombie;
         sf::Image* imgfond;
         sf::Sprite* sprfond;
+        sf::Image* imgbombe;
+        sf::Sprite* sprbombe;
+        
+        
         int offset;
 };
 
