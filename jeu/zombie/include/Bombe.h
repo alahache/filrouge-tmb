@@ -15,6 +15,9 @@ class Bombe : public GameSprite {
     
     	static const float POSX = 1565;
     	static const float POSY = 245;
+    	 
+    	static const float LIMIT = 200;
+    	    	
     	
     	// =================================== Constructors / Destructor
         Bombe(sf::Image* img, ZombieGame* pGame, Catapulte* _catapulte, sf::Image* _imgterrain);
@@ -39,20 +42,12 @@ class Bombe : public GameSprite {
         float speed;
         float angle;
         
-        // Define the limits :
-        float sizeCircleMove;
-        float criticDist;
-        int xEye;
-        int yEye;
-        
         // Test if the ball is attach or not :
         bool attached;
         bool drag;
         bool lancee;
         
         // =================================== Protected methods
-        void limitMovement(int x, int y, float taille);
-        void updateLimit();
         void calculateDirection();
 };
 
