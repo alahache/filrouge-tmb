@@ -2,6 +2,8 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
 #include "ZombieGame.h"
 
@@ -11,19 +13,20 @@ ZombieGame::ZombieGame()
 	: Game(SCREEN_W, SCREEN_H, "ZombieGame") {
 	
 	loadRessources();
+	srand(time(NULL));
 }
 
 ZombieGame::~ZombieGame() {
 	delete camera;
 	delete imgzombie;
-	delete sprzombie;
+	sprzombies.clear();
 	delete imgterrain;
 	delete sprterrain;
 	delete catapulte;
 	delete imgbombe;
 	delete sprbombe;
-	delete sprexplosion;
 	delete imgexplosion;
+	delete sprexplosion;
 }
 
 void ZombieGame::loadRessources() {
@@ -55,14 +58,18 @@ void ZombieGame::loadRessources() {
 	imgzombie = new sf::Image();
 	if (!imgzombie->LoadFromFile("images/zombie.png"))
 		std::cout << "ERREUR: chargement de l'image";
-	sprzombie = new Zombie(imgzombie, imgterrain);
-	AddSprite(sprzombie);
 	
 	camera = new Camera(window, sprfond);
 }
 
 void ZombieGame::initGame() {
 	isGameOn = true;
+	for(unsigned int i = 0; i<sprzombies.size(); i++) {
+	    RemoveSprite(sprzombies[i]);
+	}
+	sprzombies.clear();
+	sprzombies.push_back(new Zombie(imgzombie, imgterrain));
+    AddSprite(sprzombies.back());
 }
 
 sf::Vector2f ZombieGame::GetMousePosition() {
@@ -111,12 +118,21 @@ void ZombieGame::Run() {
 		window->Draw(*sprterrain);
 		
 		if(isGameOn) {
+			if(rand()%600 <= 1) {
+			    //for(unsigned int i = 0; i<4+rand()%4; i++) {
+                    sprzombies.push_back(new Zombie(imgzombie, imgterrain));
+	                AddSprite(sprzombies.back());
+                //}
+			    
+			}
+			
 			// Update all sprites :
 			for(int i=0; i<sprites.size(); i++) {
 				AnimatedSprite* a = dynamic_cast<AnimatedSprite*>(sprites[i]);
 				if(a != NULL) a->Animate();
 				sprites[i]->Update();
 			}
+			
 		}
 		
 		// Draw all the objects on the window

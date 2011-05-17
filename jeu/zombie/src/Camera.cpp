@@ -8,6 +8,7 @@ Camera::Camera(sf::RenderWindow* _window, sf::Sprite* _sprbackground)
 {
 	view = new sf::View(sf::FloatRect(0, 0, window->GetWidth(), window->GetHeight()));
 	window->SetView(*view);
+	state=STOP;
 }
 
 Camera::~Camera() {
