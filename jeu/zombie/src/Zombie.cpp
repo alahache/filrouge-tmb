@@ -1,4 +1,4 @@
-
+#include <cstdlib>
 #include <iostream>
 #include "Zombie.h"
 
@@ -11,14 +11,21 @@ Zombie::Zombie(sf::Image *pImg, sf::Image *pFond)
 {
 	type = "zombie";
 	
-    SetY(0);
+    //SetY(0);
     fcpt = 0;
+    fcptMax = 2+rand()%3;
     
     // HitBox :
     hitBox.Left 	= 10;
     hitBox.Top 		= 10;
     hitBox.Right 	= 50;
     hitBox.Bottom 	= 88;
+    
+    int y = 0;
+    while(fond->GetPixel(X()+Width()/2, y+Height()-3).a < 40) {
+        y++;
+    }
+    SetY(y);
 }
 
 Zombie::~Zombie() {
@@ -30,7 +37,7 @@ void Zombie::Kill() {
 }
 
 void Zombie::Update() {
-    if(fcpt > 3) {
+    if(fcpt > fcptMax) {
         fcpt = 0;
 	    const int max = 1;
 	    int sum = 0;

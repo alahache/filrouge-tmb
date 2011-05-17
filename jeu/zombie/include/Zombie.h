@@ -24,6 +24,7 @@ class Zombie : public AnimatedSprite {
         // =================================== Attributes
         sf::Image* fond;
         int fcpt;
+        int fcptMax;
         bool dead;
 };
 

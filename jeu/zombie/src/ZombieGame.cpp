@@ -118,7 +118,7 @@ void ZombieGame::Run() {
 		window->Draw(*sprterrain);
 		
 		if(isGameOn) {
-			if(rand()%600 <= 1) {
+			if(rand()%500 <= 1) {
 			    //for(unsigned int i = 0; i<4+rand()%4; i++) {
                     sprzombies.push_back(new Zombie(imgzombie, imgterrain));
 	                AddSprite(sprzombies.back());
