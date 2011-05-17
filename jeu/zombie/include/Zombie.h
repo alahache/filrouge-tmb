@@ -13,6 +13,7 @@ class Zombie : public AnimatedSprite {
         
         // =================================== Public methods
         void Kill();
+        bool IsDead();
         
         // =================================== Redefined methods
         virtual void Update();

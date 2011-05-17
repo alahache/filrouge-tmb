@@ -19,6 +19,8 @@ Zombie::Zombie(sf::Image *pImg, sf::Image *pFond)
     hitBox.Top 		= 10;
     hitBox.Right 	= 50;
     hitBox.Bottom 	= 88;
+    
+    dead = false;
 }
 
 Zombie::~Zombie() {
@@ -27,6 +29,10 @@ Zombie::~Zombie() {
 
 void Zombie::Kill() {
 	dead = true;
+}
+
+bool Zombie::IsDead() {
+	return dead;
 }
 
 void Zombie::Update() {
