@@ -9,8 +9,8 @@
 #include "Barre.h"
 #include "Brique.h"
 
-#define MAX_BRIQUES 50
-#define BRIQUES_PER_LINE 12
+#define MAX_BRIQUES 54
+#define BRIQUES_PER_LINE 9
 
 BreakOut::BreakOut()
 	: Game(SCREEN_W, SCREEN_H, "BreakOut") {
@@ -33,7 +33,7 @@ void BreakOut::loadRessources() {
 
 	//Chargement du Background
 	imgBackground = new sf::Image();
-	if (!imgBackground->LoadFromFile("Bg.png"))
+	if (!imgBackground->LoadFromFile("bg.png"))
 		//return EXIT_FAILURE;
 		std::cout << "ERREUR: chargement de l'image";
 	sprBackground = new sf::Sprite(*imgBackground);
@@ -41,7 +41,7 @@ void BreakOut::loadRessources() {
 
 	//Chargement de la barre
 	imgBarre = new sf::Image();
-	if (!imgBarre->LoadFromFile("barre.png"))
+	if (!imgBarre->LoadFromFile("wood.png"))
 		//return EXIT_FAILURE;
 		std::cout << "ERREUR: chargement de l'image";
 	barre = new Barre(imgBarre, this);
@@ -49,19 +49,19 @@ void BreakOut::loadRessources() {
 
 	//Chargement de la balle
 	imgBalle = new sf::Image();
-	if (!imgBalle->LoadFromFile("img.png"))
+	if (!imgBalle->LoadFromFile("balle.png"))
 		std::cout << "ERREUR: chargement de l'image";
 	balle = new Balle(imgBalle, this);
 	AddSprite(balle);
 	
 	//Chargement des briques
 	imgBrique = new sf::Image();
-	if (!imgBrique->LoadFromFile("brique.png"))
+	if (!imgBrique->LoadFromFile("feuille.png"))
 		std::cout << "ERREUR: chargement de l'image";
 	brique.resize(MAX_BRIQUES);
 	for(int i=0; i<MAX_BRIQUES; i++) {
-	    Brique* uneBrique = new Brique(imgBrique, 60 + i%BRIQUES_PER_LINE*(imgBrique->GetWidth()+5), 
-	                                    140 + i/BRIQUES_PER_LINE*(imgBrique->GetHeight()+5), this, 1);
+	    Brique* uneBrique = new Brique(imgBrique, 60 + i%BRIQUES_PER_LINE*(imgBrique->GetWidth()+25), 
+	                                    40 + i/BRIQUES_PER_LINE*(imgBrique->GetHeight()+25), this, 1);
     	AddSprite(uneBrique);
     	brique[i] = uneBrique;
 	}
@@ -105,6 +105,7 @@ void BreakOut::initGame() {
     for(int i=0; i<MAX_BRIQUES; i++)
         dynamic_cast<Brique*>(brique[i])->Init();
     isGameOn = true;
+    haveWon = false;
     score=0;
 }
 
@@ -130,6 +131,8 @@ void BreakOut::Run() {
 			}
 		}
 		
+		int score= 0;
+		
 		if(isGameOn) {
 		
 			// Update all sprites :
@@ -140,35 +143,46 @@ void BreakOut::Run() {
 			score++;
 		}
 		
-		// change text :
-		std::string txt("Score : ");
-		{
-			std::ostringstream os;
-			os << score;
-			if(!isGameOn) {
-		    	os << " Perdu !! Appuyer sur entrée pour recommencer.";
-			}
-			txt += os.str();
-		}
-		text->SetText(txt);
-		//String text(txt, font, 20);
-		text->SetColor(sf::Color(0, 0, 0));
-
 		// Clear screen
 		window->Clear(sf::Color(255, 255, 255));
 		
 		// Draw the background
 		window->Draw(*sprBackground);
 		
+		
+		score = MAX_BRIQUES + 2; // + les deux autres sprites...
+		
 		// Draw all the objects on the window
 		for(unsigned int i=0; i<sprites.size(); i++) {
-		    if(dynamic_cast<Brique*>(sprites[i]) == NULL || dynamic_cast<Brique*>(sprites[i])->IsLiving()) //N'affiche pas les briques touchees
+		    if(dynamic_cast<Brique*>(sprites[i]) == NULL || dynamic_cast<Brique*>(sprites[i])->IsLiving()) {//N'affiche pas les briques touchees
 			    window->Draw(*(sprites[i]));
+			    score--;
+		    }
 		}
 		
-		if(!isGameOn) {
-		    //window->Draw(*sprBackground);
+		if(score == MAX_BRIQUES) {
+		    haveWon = true;
+		    isGameOn = false;
 		}
+		
+		// change text :
+		std::string txt(" Score : ");
+		{
+			std::ostringstream os;
+			os << score;
+			if(!isGameOn) {
+			    if(haveWon) {
+			        os << " Gagne !!! ";
+			    } else {
+			        os << " Perdu !!! ";
+			    }
+		    	os << "Appuyez sur entree pour recommencer.";
+			}
+			txt += os.str();
+		}
+		text->SetText(txt);
+		//String text(txt, font, 20);
+		text->SetColor(sf::Color(255, 255, 255));
 		
 		// Draw the string
 		window->Draw(*text);

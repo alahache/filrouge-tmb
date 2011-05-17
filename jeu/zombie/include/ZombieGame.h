@@ -46,7 +46,7 @@ class ZombieGame : public Game {
 		
 		// Sprites :
 		sf::Image* imgzombie;
-		Zombie* sprzombie;
+		std::vector<Zombie*> sprzombies;
 		sf::Image* imgfond;
 		sf::Sprite* sprfond;
 		sf::Image* imgterrain;
