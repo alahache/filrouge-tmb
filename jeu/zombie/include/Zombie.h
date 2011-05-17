@@ -12,6 +12,7 @@ class Zombie : public AnimatedSprite {
         ~Zombie();
         
         // =================================== Public methods
+        void Kill();
         
         // =================================== Redefined methods
         virtual void Update();
@@ -23,6 +24,7 @@ class Zombie : public AnimatedSprite {
         // =================================== Attributes
         sf::Image* fond;
         int fcpt;
+        bool dead;
 };
 
 #endif

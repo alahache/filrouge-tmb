@@ -9,12 +9,24 @@ using namespace std;
 Zombie::Zombie(sf::Image *pImg, sf::Image *pFond)
 	: AnimatedSprite(pImg, 5, 5, 5, 50, 88), fond(pFond)
 {
+	type = "zombie";
+	
     SetY(0);
     fcpt = 0;
+    
+    // HitBox :
+    hitBox.Left 	= 10;
+    hitBox.Top 		= 10;
+    hitBox.Right 	= 50;
+    hitBox.Bottom 	= 88;
 }
 
 Zombie::~Zombie() {
 	// Nothing to delete
+}
+
+void Zombie::Kill() {
+	dead = true;
 }
 
 void Zombie::Update() {
@@ -42,5 +54,6 @@ void Zombie::Update() {
 }
 
 void Zombie::HitBy(GameSprite* pSpr) {
-	// To be redefined if necessary
+	if(pSpr->GetType()=="bombe")
+		Kill();
 }

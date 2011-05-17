@@ -3,6 +3,8 @@
 #include "ZombieGame.h"
 #include "Bombe.h"
 
+#define sqr(x) (x)*(x)
+
 using namespace std;
 
 Bombe::Bombe(sf::Image *img, ZombieGame* pGame, Catapulte* _catapulte, sf::Image* _imgterrain, Explosion* _sprexplosion)
@@ -16,6 +18,12 @@ Bombe::Bombe(sf::Image *img, ZombieGame* pGame, Catapulte* _catapulte, sf::Image
 	posOrigin.y = POSY;
 	SetPosition(posOrigin);
 	
+	// HitBox :
+    hitBox.Left 	= 10;
+    hitBox.Top 		= 10;
+    hitBox.Right 	= 40;
+    hitBox.Bottom 	= 40;
+	
 	lancee = false;
 	drag = false;
 }
@@ -26,8 +34,13 @@ Bombe::~Bombe() {
 void Bombe::Update() {
 	if(lancee)
 	{
+		// La bombe est lancée :
 		direction.y += 1;
 		Move(direction);
+		
+		bool explode = false;
+		
+		// Collisions avec le terrain :
 		if(X() < 0 || X() > imgterrain->GetWidth() || Y() > imgterrain->GetHeight())
 		{
 			lancee = false;
@@ -40,7 +53,41 @@ void Bombe::Update() {
 		}
 		else if(X() < 1440 && imgterrain->GetPixel(X()+Width()/2, Y()+Height()-3).a > 40)
 		{
+			explode = true;
+		}
+		else
+		{
+			// Collision avec les zombies :
+			for(int i=0; i<game->NbSprites(); i++)
+			{
+				GameSprite* gs = game->GetSprite(i);
+				if(gs->GetType()!="zombie") continue;
+				if(Hits(gs))
+				{
+					explode = true;
+					break;
+				}
+			}
+		}
+		
+		if(explode)
+		{
+			// Collision avec les zombies :
+			for(int i=0; i<game->NbSprites(); i++)
+			{
+				GameSprite* gs = game->GetSprite(i);
+				if(gs->GetType()!="zombie") continue;
+				float zx = gs->X() + gs->Width()/2;
+				float zy = gs->Y() + gs->Height()/2;
+				if((sqr(zx-X()) + sqr(zy-Y())) <= sqr(EXPLOSIONLIMIT))
+				{
+					gs->HitBy(this);
+					cout << "boom" << endl;
+				}
+			}
+			
 			explosion();
+			explode = true;
 			lancee = false;
 			game->GetCamera().Stop();
 			SetPosition(posOrigin);
@@ -48,6 +95,7 @@ void Bombe::Update() {
 	}
 	else
 	{
+		// La bombe est attachée à la catapulte :
 		if(game->GetInterface().isMousePressed())
 		{
 			sf::Vector2f pos = game->GetMousePosition();

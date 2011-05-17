@@ -17,7 +17,8 @@ class Bombe : public GameSprite {
     	static const float POSX = 1565;
     	static const float POSY = 245;
     	 
-    	static const float LIMIT = 200;
+    	static const float LIMIT = 250;
+    	static const float EXPLOSIONLIMIT = 100;
     	    	
     	
     	// =================================== Constructors / Destructor
