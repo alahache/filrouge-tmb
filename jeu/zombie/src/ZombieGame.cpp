@@ -133,6 +133,21 @@ void ZombieGame::Run() {
 				sprites[i]->Update();
 			}
 			
+			// Delete all killed zombies :
+			vector<Zombie*>::iterator it=sprzombies.begin();
+			while(it!=sprzombies.end())
+			{
+				if((*it)->IsDead())
+				{
+					RemoveSprite(*it);
+					sprzombies.erase(it);
+				}
+				else
+				{
+					it++;
+				}
+			}
+			
 		}
 		
 		// Draw all the objects on the window

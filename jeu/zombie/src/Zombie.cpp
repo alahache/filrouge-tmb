@@ -26,6 +26,7 @@ Zombie::Zombie(sf::Image *pImg, sf::Image *pFond)
         y++;
     }
     SetY(y);
+    dead = false;
 }
 
 Zombie::~Zombie() {
@@ -34,6 +35,10 @@ Zombie::~Zombie() {
 
 void Zombie::Kill() {
 	dead = true;
+}
+
+bool Zombie::IsDead() {
+	return dead;
 }
 
 void Zombie::Update() {
