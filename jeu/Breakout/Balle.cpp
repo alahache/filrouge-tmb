@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cassert>
 #include <cstdlib>
+#include <ctime>
 
 #include "Balle.h"
 #include "BreakOut.h"
@@ -9,10 +10,13 @@
 
 #define PI 3.14159265
 
+using namespace std;
+
 Balle::Balle(sf::Image *img, BreakOut* pGame)
 	: GameSprite(img), game(pGame)
 {
     Init();
+    srand ( time(NULL) );
 }
 
 Balle::~Balle() {
@@ -47,7 +51,10 @@ void Balle::Update() {
 		
 			direction.y = -abs(direction.y);
 			direction.x = direction.x + (X() + Width()/2 - (curSpr->X() + curSpr->Width()/2))/10;
-			
+			if(direction.x > 10)
+			    direction.x = 10;
+			if(direction.x < -10)
+			    direction.x = -10;
 		}
 		
 		if(curSpr->GetType() == "brique") {
@@ -55,18 +62,22 @@ void Balle::Update() {
 		    
 		    float dx = direction.x;
 		    float dy = direction.y;
-                
-            if (abs(abs(X() - (curSpr->X() + curSpr->Width())) -
+		    
+		    if((X() + Width()/2 < curSpr->X() + curSpr->Width()/2 && dx < 0)
+		            || (X() + Width()/2 > curSpr->X() + curSpr->Width()/2 && dx > 0)) {
+		        dy = -dy;
+		        //cout << "BAAAM" << endl;
+		    } else if (abs(abs(X() - (curSpr->X() + curSpr->Width())) -
                          abs(X() + Width() -
                                   curSpr->X())) >
                 abs(abs(Y() - curSpr->Y() - curSpr->Height()) -
                          abs(Y() + Height() -
                                   curSpr->Y()))) {
                 dx = -dx;
-                std::cout << "change X" << std::endl;
+                //cout << "change X" << endl;
             } else {
                 dy = -dy;
-                std::cout << "change Y" << std::endl;
+                //cout << "change Y" << endl;
             }
 		    
 		    direction.x = dx;
@@ -89,6 +100,8 @@ void Balle::Init() {
 	SetY(3*game->GetBackground().GetSize().y / 4);
     
     // Direction :
-    direction.x = 8;
+    int r = rand() % 4;
+    direction.x = (rand()%2 ? r+4 : -r-4);
+    
     direction.y = -8;
 }

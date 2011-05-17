@@ -54,6 +54,7 @@ class BreakOut : public Game {
         sf::String* text;
         
         int score;
+        bool haveWon;
 };
 
 #endif
