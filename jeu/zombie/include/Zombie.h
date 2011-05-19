@@ -5,6 +5,8 @@
 
 #include "AnimatedSprite.h"
 
+class ZombieGame;
+
 class Zombie : public AnimatedSprite {
     public:
     	// =================================== Constructors / Destructor
@@ -23,6 +25,7 @@ class Zombie : public AnimatedSprite {
     
     protected:
         // =================================== Attributes
+        ZombieGame* game;
         sf::Image* fond;
         int fcpt;
         int fcptMax;

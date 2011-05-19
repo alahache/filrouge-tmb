@@ -1,8 +1,11 @@
 #include <cstdlib>
 #include <iostream>
 #include "Zombie.h"
+#include "ZombieGame.h"
 
 using namespace std;
+
+#define GAMEOVER 1600
 
 //================================================================ PUBLIC
 
@@ -42,6 +45,13 @@ bool Zombie::IsDead() {
 }
 
 void Zombie::Update() {
+	
+	if(X() > GAMEOVER)
+	{
+			game->GameOver();
+			return;
+	}
+	
     if(fcpt > fcptMax) {
         fcpt = 0;
 	    const int max = 1;

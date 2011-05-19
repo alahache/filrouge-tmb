@@ -13,8 +13,9 @@ using namespace std;
 
 int main() {
     ZombieGame z;
-    Interface* inter = new Interface(z.GetWindow()); //Emulation de la webcam
+    Interface* inter = new Interface(); //Emulation de la webcam
     z.SetInterface(inter);
     z.Run();
+    delete inter;
     return 0;
 }

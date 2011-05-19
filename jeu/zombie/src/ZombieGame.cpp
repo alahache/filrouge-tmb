@@ -15,6 +15,7 @@ ZombieGame::ZombieGame()
 	loadRessources();
 	srand(time(NULL));
 	isGameOn = false;
+	gameover = false;
 }
 
 ZombieGame::~ZombieGame() {
@@ -80,11 +81,17 @@ sf::Vector2f ZombieGame::GetMousePosition() {
 	return pos;
 }
 
+void ZombieGame::GameOver() {
+	isGameOn = false;
+	gameover = true;
+}
+
 void ZombieGame::Run() {
 
 	// Start the game loop
 	while (window->IsOpened())
 	{
+		
 		// Process events
 		sf::Event Event;
 		while (window->GetEvent(Event))
@@ -100,7 +107,9 @@ void ZombieGame::Run() {
 			}
 		}
 		
-		if(isGameOn) initGame();
+		if(gameover) {
+			// rien
+		}
 
 		// Clear screen
 		window->Clear(sf::Color(255, 255, 255));
@@ -156,6 +165,11 @@ void ZombieGame::Run() {
 		for(int i=0; i<sprites.size(); i++) {
 			window->Draw(*(sprites[i]));
 		}
+		
+		// Draw the mouse position :
+		sf::Vector2f mouse_pos = GetMousePosition();
+		sf::Shape circle = sf::Shape::Circle(mouse_pos.x, mouse_pos.y, 10, sf::Color::Red);
+		window->Draw(circle);
 		
 		// Update the window
 		window->Display();

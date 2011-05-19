@@ -25,6 +25,7 @@ class ZombieGame : public Game {
         
         // =================================== Public methods
         sf::Vector2f GetMousePosition();
+        void GameOver();
         
         // =================================== Redefined methods
         void Run();
@@ -43,6 +44,7 @@ class ZombieGame : public Game {
 		// Game engine :
 		Interface* interface;
 		Camera* camera;
+		bool gameover;
 		
 		// Sprites :
 		sf::Image* imgzombie;
