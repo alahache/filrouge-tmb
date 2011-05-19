@@ -1,18 +1,33 @@
-CC = g++
-EXEC_NAME = exe
-INCLUDES = 
-LIBS = -lsfml-graphics -lsfml-window -lsfml-system
-OBJ_FILES = main.cpp SMB.h SMB.cpp Interface.h Interface.cpp
-OPT_CMP=-c
+CC=g++
+EXEC_NAME=zombie
+INTERFACE = ../../librairie
+INCLUDES=-I$(INTERFACE)
+LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lopencv_core -lopencv_highgui 
+OBJ_FILES = Main.o Interface.o SMB.o
+OPT_CMP=-c -ggdb
 OPT_EDL=-o
 
+# Lancement de la chaîne de compilation :
 all: $(EXEC_NAME)
 
-clean:
-	rm $(EXEC_NAME) $(OBJ_FILES)
+# Nettoyage des fichiers .o ainsi que de l'exécutable :
+mrproper: clean
+	rm $(EXEC_NAME)
 
+# Nettoyage des fichiers .o :
+clean:
+	rm $(OBJ_FILES)
+
+# Edition des liens :
 $(EXEC_NAME): $(OBJ_FILES)
 	$(CC) $(OPT_EDL) $(EXEC_NAME) $(OBJ_FILES) $(LIBS)
+	
+Interface.o: $(INTERFACE)/Interface.cpp
+	$(CC) $(OPT_CMP) $(INCLUDES) $(INTERFACE)/Interface.cpp
+	
+Main.o: main.cpp
+	$(CC) $(OPT_CMP) $(INCLUDES) main.cpp
 
-%.o: %.cpp
+# Pattern de compilation des modules :
+%.o:
 	$(CC) $(OPT_CMP) $(INCLUDES) $<
