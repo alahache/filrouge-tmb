@@ -50,7 +50,6 @@ void SMB::SetInterface(Interface* myInterface)
 
 void SMB::loadRessources()
 {
-
     // Chargement des images :
     imageBackground = new sf::Image();
     if (!imageBackground->LoadFromFile("terre2.png"))
@@ -106,6 +105,8 @@ void SMB::loadRessources()
     {
         spriteBall4 = new Sprite(*imageBall4);
     }
+    
+    
 }
 
 
@@ -173,6 +174,7 @@ void SMB::Run()
     }
 
     int score = 0;
+    bool isGameOn = false;
 
     string txt("Score : ");
     {
@@ -206,6 +208,15 @@ void SMB::Run()
             // Fenêtre fermée : on quitte
             if (event.Type == Event::Closed)
                 app->Close();
+            
+            // Mode Pause :    
+            if(event.Type == sf::Event::KeyPressed) {
+				if(!isGameOn) {
+			    	isGameOn = true;
+				} else {
+					isGameOn = false;
+				}
+			}
 
             // Si on clicke sur un sprite :
             if(interface->isMousePressed())
@@ -241,10 +252,14 @@ void SMB::Run()
             }
 
         }
-
+        
+	if(!isGameOn) {
         // Efface l'écran (remplissage avec du noir)
-        app->Clear();
-
+        app->Display();
+	}
+	
+	if(isGameOn) {
+		app->Clear();
         // On met à jour et on affiche le score :
         txt.clear();
         txt += ("Score : ");
@@ -266,13 +281,12 @@ void SMB::Run()
         app->Draw(*spriteBall4);
 
         // Speed :
-        YBall  += 2.3;
-        YBall2 += 1.9;
-        YBall3 += 2.3;
-        YBall4 += 1.8;
+        YBall  += 1.7;
+        YBall2 += 1.1;
+        YBall3 += 1.6;
+        YBall4 += 1.3;
 
         // Collision Tests :
-        // if(YBall > 600)
         if(collisionTest(spriteBackground,spriteBall))
         {
             XBall = rand()%530;
@@ -312,13 +326,17 @@ void SMB::Run()
         spriteBall2->SetPosition(XBall2,YBall2);
         spriteBall3->SetPosition(XBall3,YBall3);
         spriteBall4->SetPosition(XBall4,YBall4);
+        
+        sf::Shape cursor = sf::Shape::Circle(GetMousePosition().x,GetMousePosition().y,10,sf::Color::Red);
+        app->Draw(cursor);
 
         // Affichage du contenu de la fenêtre à l'écran
         app->Display();
 
         // On limite à 60 images par secondes :
         app->SetFramerateLimit(60);
-
+	}
+	
     }
 }
 
