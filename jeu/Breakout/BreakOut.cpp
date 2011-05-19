@@ -105,6 +105,7 @@ void BreakOut::initGame() {
     for(int i=0; i<MAX_BRIQUES; i++)
         dynamic_cast<Brique*>(brique[i])->Init();
     isGameOn = true;
+    first = false;
     haveWon = false;
     score=0;
 }
@@ -112,6 +113,8 @@ void BreakOut::initGame() {
 void BreakOut::Run() {
 
 	initGame();
+	isGameOn = false;
+	first = true;
 
 	// Start the game loop
 	while (window->IsOpened())
@@ -171,12 +174,14 @@ void BreakOut::Run() {
 			std::ostringstream os;
 			os << score;
 			if(!isGameOn) {
-			    if(haveWon) {
-			        os << " Gagne !!! ";
-			    } else {
-			        os << " Perdu !!! ";
-			    }
-		    	os << "Appuyez sur entree pour recommencer.";
+				if(!first) {
+					if(haveWon) {
+					    os << " Gagne !!! ";
+					} else {
+					    os << " Perdu !!! ";
+					}
+				}
+		    	os << "Appuyez sur entree pour commencer.";
 			}
 			txt += os.str();
 		}

@@ -101,7 +101,7 @@ void Balle::Init() {
     
     // Direction :
     int r = rand() % 4;
-    direction.x = (rand()%2 ? r+4 : -r-4);
+    direction.x = (rand()%2 ? r+3 : -r-3);
     
-    direction.y = -8;
+    direction.y = -6;
 }

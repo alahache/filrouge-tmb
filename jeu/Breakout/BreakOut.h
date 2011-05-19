@@ -55,6 +55,7 @@ class BreakOut : public Game {
         
         int score;
         bool haveWon;
+        bool first;
 };
 
 #endif
