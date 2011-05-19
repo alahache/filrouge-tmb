@@ -13,8 +13,10 @@ using namespace std;
 
 int main() {
     BreakOut bo;
-    Interface* inter = new Interface(bo.GetWindow()); //Emulation de la webcam
+    Interface* inter = new Interface(); //Emulation de la webcam
     bo.SetInterface(inter);
     bo.Run();
+    delete inter;
+    
     return 0;
 }

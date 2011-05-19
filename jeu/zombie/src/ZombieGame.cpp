@@ -100,13 +100,6 @@ void ZombieGame::Run() {
 				}
 			}
 		}
-		
-		// Set camera
-		if(interface->GetX() >= 0.7)
-			camera->Move(10, 0);
-		else if(interface->GetX() <= 0.3)
-			camera->Move(-10, 0);
-		camera->Update();
 
 		// Clear screen
 		window->Clear(sf::Color(255, 255, 255));
@@ -118,6 +111,14 @@ void ZombieGame::Run() {
 		window->Draw(*sprterrain);
 		
 		if(isGameOn) {
+		
+			// Set camera
+			if(interface->GetX() >= 0.7)
+				camera->Move(10, 0);
+			else if(interface->GetX() <= 0.3)
+				camera->Move(-10, 0);
+			camera->Update();
+		
 			if(rand()%500 <= 1) {
 			    //for(unsigned int i = 0; i<4+rand()%4; i++) {
                     sprzombies.push_back(new Zombie(imgzombie, imgterrain));
