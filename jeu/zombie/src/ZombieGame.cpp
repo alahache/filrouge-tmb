@@ -107,7 +107,7 @@ void ZombieGame::Run() {
 		}
 		
 		if(gameover) {
-			window->Close();
+			//window->Close();
 		}
 
 		// Clear screen
