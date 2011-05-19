@@ -1,9 +1,9 @@
 CC=g++
-EXEC_NAME=zombie
+EXEC_NAME=docMabool
 INTERFACE = ../../librairie
 INCLUDES=-I$(INTERFACE)
 LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lopencv_core -lopencv_highgui 
-OBJ_FILES = Main.o Interface.o SMB.o
+OBJ_FILES = main.o Interface.o SMB.o
 OPT_CMP=-c -ggdb
 OPT_EDL=-o
 
@@ -29,5 +29,5 @@ Main.o: main.cpp
 	$(CC) $(OPT_CMP) $(INCLUDES) main.cpp
 
 # Pattern de compilation des modules :
-%.o:
+%.o:%.cpp
 	$(CC) $(OPT_CMP) $(INCLUDES) $<

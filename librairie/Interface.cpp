@@ -267,6 +267,10 @@ bool Interface::isMousePressed()
 		semop (semClick, &reserver, 1);
 		bool res = *isPressed;
 		semop (semClick, &liberer, 1); 
+		if(res == true)
+			cerr << "Préssé !!" << endl;
+		else
+			cerr << "=== Pas préssé !!" << endl;
 		return res;
 	}
 

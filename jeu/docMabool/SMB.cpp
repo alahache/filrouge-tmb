@@ -198,10 +198,10 @@ void SMB::Run()
     int XBall4 = 250;
     float YBall4 = 0;
 
-
     // Boucle principale
     while (app->IsOpened())
     {
+		
         Event event;
         while (app->GetEvent(event))
         {
@@ -217,39 +217,7 @@ void SMB::Run()
 					isGameOn = false;
 				}
 			}
-
-            // Si on clicke sur un sprite :
-            if(interface->isMousePressed())
-            {
-                if(hitTest(spriteBall))
-                {
-                    XBall = rand()%730;
-                    YBall = -150;
-                    spriteBall->SetPosition(XBall,YBall);
-                    score += 5;
-                }
-                if(hitTest(spriteBall2))
-                {
-                    XBall2 = rand()%730;
-                    YBall2 =  -150;
-                    spriteBall2->SetPosition(XBall2,YBall2);
-                    score += 5;
-                }
-                if(hitTest(spriteBall3))
-                {
-                    XBall3 = rand()%730;
-                    YBall3 =  -150;
-                    spriteBall3->SetPosition(XBall3,YBall3);
-                    score += 5;
-                }
-                if(hitTest(spriteBall4))
-                {
-                    XBall4 = rand()%730;
-                    YBall4 =  -150;
-                    spriteBall4->SetPosition(XBall4,YBall4);
-                    score += 5;
-                }
-            }
+			
 
         }
         
@@ -258,7 +226,6 @@ void SMB::Run()
         app->Display();
 	}
 	
-	if(isGameOn) {
 		app->Clear();
         // On met à jour et on affiche le score :
         txt.clear();
@@ -280,12 +247,15 @@ void SMB::Run()
         app->Draw(*spriteBall3);
         app->Draw(*spriteBall4);
 
+		
+		if(isGameOn) {
         // Speed :
         YBall  += 1.7;
         YBall2 += 1.1;
         YBall3 += 1.6;
         YBall4 += 1.3;
-
+		}
+		
         // Collision Tests :
         if(collisionTest(spriteBackground,spriteBall))
         {
@@ -329,13 +299,47 @@ void SMB::Run()
         
         sf::Shape cursor = sf::Shape::Circle(GetMousePosition().x,GetMousePosition().y,10,sf::Color::Red);
         app->Draw(cursor);
+        
+        
+        // On test le click :
+        // Si on clicke sur un sprite :
+		if(interface->isMousePressed())
+		{
+			if(hitTest(spriteBall))
+			{
+				XBall = rand()%730;
+				YBall = -150;
+				spriteBall->SetPosition(XBall,YBall);
+				score += 5;
+			}
+			else if(hitTest(spriteBall2))
+			{
+				XBall2 = rand()%730;
+				YBall2 =  -150;
+				spriteBall2->SetPosition(XBall2,YBall2);
+				score += 5;
+			}
+			else if(hitTest(spriteBall3))
+			{
+				XBall3 = rand()%730;
+				YBall3 =  -150;
+				spriteBall3->SetPosition(XBall3,YBall3);
+				score += 5;
+			}
+			else if(hitTest(spriteBall4))
+			{
+				XBall4 = rand()%730;
+				YBall4 =  -150;
+				spriteBall4->SetPosition(XBall4,YBall4);
+				score += 5;
+			}
+		}
 
         // Affichage du contenu de la fenêtre à l'écran
         app->Display();
 
         // On limite à 60 images par secondes :
         app->SetFramerateLimit(60);
-	}
 	
     }
 }
