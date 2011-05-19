@@ -14,6 +14,7 @@ ZombieGame::ZombieGame()
 	
 	loadRessources();
 	srand(time(NULL));
+	isGameOn = false;
 }
 
 ZombieGame::~ZombieGame() {
@@ -64,12 +65,12 @@ void ZombieGame::loadRessources() {
 
 void ZombieGame::initGame() {
 	isGameOn = true;
-	for(unsigned int i = 0; i<sprzombies.size(); i++) {
+	/*for(unsigned int i = 0; i<sprzombies.size(); i++) {
 	    RemoveSprite(sprzombies[i]);
 	}
 	sprzombies.clear();
 	sprzombies.push_back(new Zombie(imgzombie, imgterrain));
-    AddSprite(sprzombies.back());
+    AddSprite(sprzombies.back());*/
 }
 
 sf::Vector2f ZombieGame::GetMousePosition() {
@@ -80,8 +81,6 @@ sf::Vector2f ZombieGame::GetMousePosition() {
 }
 
 void ZombieGame::Run() {
-
-	initGame();
 
 	// Start the game loop
 	while (window->IsOpened())
@@ -95,11 +94,13 @@ void ZombieGame::Run() {
 			window->Close();
 		
 			if(Event.Type == sf::Event::KeyPressed) {
-				if(!isGameOn && Event.Key.Code == sf::Key::Return) {
-			    	initGame();
+				if(Event.Key.Code == sf::Key::Return) {
+			    	isGameOn = !isGameOn;
 				}
 			}
 		}
+		
+		if(isGameOn) initGame();
 
 		// Clear screen
 		window->Clear(sf::Color(255, 255, 255));
