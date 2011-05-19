@@ -21,7 +21,6 @@ ZombieGame::ZombieGame()
 ZombieGame::~ZombieGame() {
 	delete camera;
 	delete imgzombie;
-	sprzombies.clear();
 	delete imgterrain;
 	delete sprterrain;
 	delete catapulte;
@@ -108,7 +107,7 @@ void ZombieGame::Run() {
 		}
 		
 		if(gameover) {
-			// rien
+			window->Close();
 		}
 
 		// Clear screen

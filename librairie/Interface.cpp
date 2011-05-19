@@ -465,12 +465,12 @@ void Interface::binarisation(IplImage* image, int *nbPixels, int *nbPixelsClick)
 		semop (semClick, &reserver, 1);
 		if ( ((*x-xClick)*(*x-xClick) + (*y-yClick)*(*y-yClick)) < SEUILAPPROCHE )
 		{
-			cerr << "### Pressed : " << ((*x-xClick)*(*x-xClick) + (*y-yClick)*(*y-yClick)) << endl;
+			//cerr << "### Pressed : " << ((*x-xClick)*(*x-xClick) + (*y-yClick)*(*y-yClick)) << endl;
 			*isPressed = true;
 		}
 		else
 		{
-			cerr << "### Not Pressed... : " << ((*x-xClick)*(*x-xClick) + (*y-yClick)*(*y-yClick)) << endl;
+			//cerr << "### Not Pressed... : " << ((*x-xClick)*(*x-xClick) + (*y-yClick)*(*y-yClick)) << endl;
 			*isPressed = false;
 		}
 		semop (semClick, &liberer, 1); 
